@@ -308,6 +308,25 @@
     }, 250);
   });
 
+  // ===== HERO CAROUSEL =====
+  const carousels = document.querySelectorAll('.hero-carousel');
+  carousels.forEach(function(carousel, index) {
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    if (slides.length > 1) {
+      let currentSlide = 0;
+      // Stagger the animations slightly if there are multiple carousels
+      const delay = index * 1000;
+      
+      setTimeout(function() {
+        setInterval(function () {
+          slides[currentSlide].classList.remove('active');
+          currentSlide = (currentSlide + 1) % slides.length;
+          slides[currentSlide].classList.add('active');
+        }, 5000); // Slower interval for a premium feel
+      }, delay);
+    }
+  });
+
   // ===== KEYBOARD NAVIGATION =====
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
@@ -323,5 +342,122 @@
       }
     }
   });
+
+  // ===== SANITY INTEGRATION =====
+  const PROJECT_ID = 'sc8k5yfq';
+  const DATASET = 'production';
+  const productGrid = document.getElementById('product-grid');
+
+  if (productGrid) {
+    // Only run this on pages with a product grid
+    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url, "isSale": false, "isNew": false}');
+    const url = `https://${PROJECT_ID}.api.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const products = data.result;
+        if (!products || products.length === 0) {
+          productGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>No products found.</p></div>';
+          
+          // Update product count
+          const countEl = document.querySelector('.product-count strong');
+          if (countEl) countEl.textContent = '0';
+          
+          return;
+        }
+
+        // Update product count
+        const countEl = document.querySelector('.product-count strong');
+        if (countEl) countEl.textContent = products.length;
+
+        productGrid.innerHTML = '';
+        products.forEach((product, index) => {
+          // Format price with commas
+          const formattedPrice = product.price ? product.price.toLocaleString() : '0';
+          
+          const article = document.createElement('article');
+          article.className = 'product-card';
+          article.id = `product-${product._id}`;
+          
+          // Recreate the HTML structure
+          article.innerHTML = `
+            <div class="product-card-image">
+              ${product.isNew ? '<span class="product-badge badge-new">New</span>' : ''}
+              ${product.isSale ? '<span class="product-badge badge-sale">Sale</span>' : ''}
+              <button class="wishlist-btn" id="wishlist-${product._id}" aria-label="Add to wishlist">
+                <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </button>
+              <img src="${product.imageUrl || 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
+              <div class="product-quick-actions">
+                <button class="quick-action-btn" id="quick-view-${product._id}">Quick View</button>
+                <button class="quick-action-btn" id="add-cart-${product._id}">Add to Cart</button>
+              </div>
+            </div>
+            <div class="product-card-info">
+              <p class="product-card-category">${product.category || 'Uncategorized'}</p>
+              <h3 class="product-card-title">${product.name}</h3>
+              <div class="product-card-price">
+                <span class="price-regular">Rs. ${formattedPrice}</span>
+              </div>
+            </div>
+          `;
+          
+          // Add click listener for navigation
+          article.addEventListener('click', function(e) {
+            if (e.target.closest('button') || e.target.closest('.quick-action-btn')) return;
+            window.location.href = `product-detail.html?product=${product.slug}`;
+          });
+
+          productGrid.appendChild(article);
+          
+          // Re-bind wish and cart actions for new elements
+          const wishBtn = article.querySelector('.wishlist-btn');
+          wishBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('active');
+            this.style.transform = 'scale(1.3)';
+            setTimeout(() => this.style.transform = '', 200);
+          });
+          
+          const cartBtn = article.querySelector('[id^="add-cart-"]');
+          cartBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const cartCount = document.getElementById('cart-count');
+            const currentCount = parseInt(cartCount.textContent, 10) || 0;
+            cartCount.textContent = currentCount + 1;
+            
+            const originalText = this.textContent;
+            this.textContent = 'Added ✓';
+            this.style.background = 'var(--color-gold)';
+            this.style.color = 'var(--color-white)';
+            
+            cartCount.style.transform = 'scale(1.4)';
+            setTimeout(() => {
+              cartCount.style.transform = 'scale(1)';
+              cartCount.style.transition = 'transform 0.3s ease';
+            }, 200);
+            
+            setTimeout(() => {
+              this.textContent = originalText;
+              this.style.background = '';
+              this.style.color = '';
+            }, 1500);
+          });
+        });
+
+        // Initialize observers for new cards
+        if ('IntersectionObserver' in window && typeof observer !== 'undefined') {
+          document.querySelectorAll('.product-card').forEach(card => {
+            card.style.animationPlayState = 'paused';
+            observer.observe(card);
+          });
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching products:', err);
+        productGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Failed to load products.</p></div>';
+      });
+  }
 
 })();
