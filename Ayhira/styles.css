@@ -1944,3 +1944,36 @@ h1, h2, h3, h4, h5, h6 {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+
+/* ===== PRODUCT SKELETON LOADING ===== */
+@keyframes skeleton-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.product-skeleton {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.product-skeleton::before {
+  content: '';
+  display: block;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-cream) 25%, #e8e0d6 37%, var(--color-cream) 63%);
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.product-skeleton::after {
+  content: '';
+  display: block;
+  height: 48px;
+  margin-top: var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-cream) 25%, #e8e0d6 37%, var(--color-cream) 63%);
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  animation-delay: 0.15s;
+}

@@ -53,11 +53,11 @@
 
       <!-- Navigation -->
       <nav class="nav-main" id="nav-main" role="navigation" aria-label="Main navigation">
-        <a href="#" class="active" id="nav-new-in">New In</a>
-        <a href="#" id="nav-embroidered">Embroidered</a>
+        <a href="shop.html" class="active" id="nav-new-in">New In</a>
+        <a href="shop.html" id="nav-embroidered">Embroidered</a>
 
         <div class="nav-dropdown" id="nav-collections-dropdown">
-          <a href="#" class="nav-dropdown-toggle" id="nav-collections">
+          <a href="shop.html" class="nav-dropdown-toggle" id="nav-collections">
             Collections
             <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
           </a>
@@ -102,7 +102,7 @@
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </button>
-        <button class="header-action-btn" id="cart-btn" aria-label="Shopping bag">
+        <button class="header-action-btn" id="cart-btn" aria-label="Shopping bag" onclick="window.location.href='checkout.html'">
           <svg viewBox="0 0 24 24">
             <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
             <line x1="3" y1="6" x2="21" y2="6"/>
@@ -114,175 +114,191 @@
     </div>
   </header>
 
-  <!-- Collection Hero -->
-  <section class="collection-hero" id="collection-hero">
-    <h1>Summer Lawn Collection</h1>
-    <p>Where Elegance Meets Tradition</p>
-    <div class="decorative-line"></div>
+  <!-- Home Hero Section -->
+  <section class="home-hero">
+    <div class="hero-split-image hero-carousel" id="hero-carousel-left">
+      <div class="carousel-slide active">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.04.53 AM.jpeg" alt="Sale 50% Off" loading="lazy">
+        <div class="hero-overlay">
+          <h2 class="text-spaced">S A L E</h2>
+          <h1>50% OFF</h1>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.09.22 AM.jpeg" alt="Flat 50% Off" loading="lazy">
+        <div class="hero-overlay">
+          <h2 class="text-spaced">F L A T</h2>
+          <h1>50% OFF</h1>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.09.32 AM.jpeg" alt="Special Sale" loading="lazy">
+        <div class="hero-overlay">
+          <h2 class="text-spaced">S P E C I A L</h2>
+          <h1>OFFER</h1>
+        </div>
+      </div>
+    </div>
+    <div class="hero-split-image hero-carousel" id="hero-carousel-right">
+      <div class="carousel-slide active">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.05.04 AM.jpeg" alt="New Arrivals" loading="lazy">
+        <div class="hero-overlay">
+          <h2 class="text-spaced">N E W</h2>
+          <h1>ARRIVALS</h1>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.07.01 AM.jpeg" alt="Luxury Formals" loading="lazy">
+        <div class="hero-overlay">
+          <h2 class="text-spaced">L U X U R Y</h2>
+          <h1>FORMALS</h1>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.07.51 AM.jpeg" alt="Summer Lawn" loading="lazy">
+        <div class="hero-overlay">
+          <h2 class="text-spaced">S U M M E R</h2>
+          <h1>LAWN</h1>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Main Content -->
-  <main class="container">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
-      <a href="index.html">Home</a>
-      <span>/</span>
-      <a href="#">Collections</a>
-      <span>/</span>
-      <span>Summer Lawn</span>
-    </nav>
+  <main class="home-main">
+    
+    <!-- Latest Drop Section -->
+    <section class="home-section">
+      <div class="section-header-center">
+        <h2 class="section-title">LATEST DROP</h2>
+        <a href="shop.html" class="section-link">VIEW ALL</a>
+      </div>
+      
+      <div class="product-grid grid-4-col" id="latest-drop-grid">
+        <!-- Products loaded dynamically from Sanity -->
+        <div class="product-skeleton"></div>
+        <div class="product-skeleton"></div>
+        <div class="product-skeleton"></div>
+        <div class="product-skeleton"></div>
+      </div>
+    </section>
 
-    <div class="collection-layout">
-      <!-- Sidebar Filters -->
-      <aside class="sidebar" id="sidebar">
-        <div class="sidebar-close" id="sidebar-close-wrapper">
-          <h2>Filters</h2>
-          <button id="sidebar-close-btn" aria-label="Close filters">
-            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
+    <!-- Promos Section -->
+    <section class="promo-section">
+      <div class="promo-banner promo-kaftan">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.09.12 AM.jpeg" alt="Kaftans Collection">
+        <h2 class="promo-title">KAFTANS</h2>
+      </div>
+      <div class="promo-banner promo-flat50">
+        <img src="images/WhatsApp Image 2026-08-02 at 2.09.22 AM.jpeg" alt="Flat 50%">
+        <div class="promo-overlay">
+          <span class="promo-sub">F L A T</span>
+          <h2 class="promo-main">50<span class="percent">%</span></h2>
         </div>
+      </div>
+    </section>
 
-        <!-- Availability -->
-        <div class="sidebar-section" id="filter-availability">
-          <div class="sidebar-header" role="button" tabindex="0" aria-expanded="true">
-            <h3>Availability</h3>
-            <span class="sidebar-toggle">
-              <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
-            </span>
-          </div>
-          <div class="sidebar-content">
-            <div class="filter-option">
-              <input type="checkbox" id="in-stock" checked>
-              <label for="in-stock">In Stock <span class="count">(8)</span></label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="out-of-stock">
-              <label for="out-of-stock">Out of Stock <span class="count">(0)</span></label>
-            </div>
-          </div>
-        </div>
+    <!-- Embroidered Section -->
+    <section class="home-section">
+      <div class="section-header-center">
+        <h2 class="section-title">EMBROIDERED</h2>
+        <a href="shop.html" class="section-link">VIEW ALL</a>
+      </div>
+      
+      <div class="product-grid grid-4-col" id="embroidered-grid">
+        <!-- Products loaded dynamically from Sanity -->
+        <div class="product-skeleton"></div>
+        <div class="product-skeleton"></div>
+        <div class="product-skeleton"></div>
+        <div class="product-skeleton"></div>
+      </div>
+    </section>
 
-        <!-- Size -->
-        <div class="sidebar-section" id="filter-size">
-          <div class="sidebar-header" role="button" tabindex="0" aria-expanded="true">
-            <h3>Size <span class="highlight">(Find Your Size)</span></h3>
-            <span class="sidebar-toggle">
-              <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
-            </span>
-          </div>
-          <div class="sidebar-content">
-            <div class="filter-option">
-              <input type="checkbox" id="size-xs">
-              <label for="size-xs">XS</label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="size-s">
-              <label for="size-s">S</label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="size-m">
-              <label for="size-m">M</label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="size-l">
-              <label for="size-l">L</label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="size-xl">
-              <label for="size-xl">XL</label>
+    <!-- Blogger Picks -->
+    <section class="home-section blogger-section">
+      <div class="section-header-center">
+        <h2 class="section-title">BLOGGER PICKS</h2>
+        <p class="section-subtitle">Featured creators</p>
+      </div>
+      
+      <div class="blogger-carousel-wrapper">
+        <button class="carousel-btn prev-btn" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        
+        <div class="blogger-carousel">
+          <!-- Card 1 -->
+          <div class="blogger-card">
+            <img src="images/WhatsApp Image 2026-08-02 at 2.07.51 AM.jpeg" alt="Blogger Pick 1" loading="lazy">
+            <div class="blogger-overlay">
+              <p class="blogger-tag">SALE</p>
+              <p class="blogger-quote">Simplicity done right.</p>
+              <div class="blogger-promo">
+                <strong>FLAT 50% off</strong>
+                <small>ON ENTIRE STOCK</small>
+              </div>
+              <a href="shop.html" class="btn-shop-look">Shop the look</a>
             </div>
           </div>
-        </div>
-
-        <!-- Category -->
-        <div class="sidebar-section" id="filter-category">
-          <div class="sidebar-header" role="button" tabindex="0" aria-expanded="true">
-            <h3>Category</h3>
-            <span class="sidebar-toggle">
-              <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
-            </span>
-          </div>
-          <div class="sidebar-content">
-            <div class="filter-option">
-              <input type="checkbox" id="cat-embroidered">
-              <label for="cat-embroidered">Embroidered <span class="count">(5)</span></label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="cat-printed">
-              <label for="cat-printed">Printed <span class="count">(2)</span></label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="cat-lawn">
-              <label for="cat-lawn">Lawn <span class="count">(3)</span></label>
-            </div>
-            <div class="filter-option">
-              <input type="checkbox" id="cat-formal">
-              <label for="cat-formal">Formal <span class="count">(3)</span></label>
+          
+          <!-- Card 2 -->
+          <div class="blogger-card">
+            <img src="images/WhatsApp Image 2026-08-02 at 2.09.02 AM.jpeg" alt="Blogger Pick 2" loading="lazy">
+            <div class="blogger-overlay">
+              <p class="blogger-tag">SALE</p>
+              <p class="blogger-quote">Blooming.</p>
+              <div class="blogger-promo">
+                <strong>FLAT 50% off</strong>
+                <small>ON ENTIRE STOCK</small>
+              </div>
+              <a href="shop.html" class="btn-shop-look">Shop the look</a>
             </div>
           </div>
-        </div>
 
-        <!-- Price Range -->
-        <div class="sidebar-section" id="filter-price">
-          <div class="sidebar-header" role="button" tabindex="0" aria-expanded="true">
-            <h3>Price</h3>
-            <span class="sidebar-toggle">
-              <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
-            </span>
-          </div>
-          <div class="sidebar-content">
-            <div class="price-range-inputs">
-              <input type="number" class="price-input" id="price-min" placeholder="Rs. 0" min="0">
-              <span class="price-separator">—</span>
-              <input type="number" class="price-input" id="price-max" placeholder="Rs. 15,000" min="0">
+          <!-- Card 3 -->
+          <div class="blogger-card">
+            <img src="images/WhatsApp Image 2026-08-02 at 2.09.12 AM.jpeg" alt="Blogger Pick 3" loading="lazy">
+            <div class="blogger-overlay">
+              <div class="blogger-promo" style="margin-top: auto;">
+                <a href="shop.html" class="btn-shop-look">Shop the look</a>
+              </div>
             </div>
           </div>
-        </div>
-      </aside>
 
-      <!-- Sidebar Overlay (mobile) -->
-      <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-      <!-- Product Area -->
-      <section class="product-area" id="product-area">
-        <div class="product-toolbar" id="product-toolbar">
-          <p class="product-count"><strong>8</strong> products</p>
-
-          <div style="display: flex; gap: 0.75rem; align-items: center;">
-            <button class="mobile-filter-toggle" id="mobile-filter-btn" aria-label="Open filters">
-              <svg viewBox="0 0 24 24">
-                <line x1="4" y1="6" x2="20" y2="6"/>
-                <line x1="4" y1="12" x2="20" y2="12"/>
-                <line x1="4" y1="18" x2="20" y2="18"/>
-                <circle cx="8" cy="6" r="2" fill="currentColor"/>
-                <circle cx="16" cy="12" r="2" fill="currentColor"/>
-                <circle cx="10" cy="18" r="2" fill="currentColor"/>
-              </svg>
-              Filters
-            </button>
-
-            <div class="sort-wrapper">
-              <span class="sort-label">Sort by</span>
-              <select class="sort-select" id="sort-select">
-                <option value="date-new">Date, new to old</option>
-                <option value="date-old">Date, old to new</option>
-                <option value="price-low">Price, low to high</option>
-                <option value="price-high">Price, high to low</option>
-                <option value="name-az">Alphabetically, A-Z</option>
-                <option value="name-za">Alphabetically, Z-A</option>
-              </select>
+          <!-- Card 4 -->
+          <div class="blogger-card">
+            <img src="images/WhatsApp Image 2026-08-02 at 2.09.22 AM.jpeg" alt="Blogger Pick 4" loading="lazy">
+            <div class="blogger-overlay">
+              <p class="blogger-tag">SALE</p>
+              <p class="blogger-quote">Black never misses.</p>
+              <div class="blogger-promo">
+                <strong>FLAT 50% off</strong>
+                <small>ON ENTIRE STOCK</small>
+              </div>
+              <a href="shop.html" class="btn-shop-look">Shop the look</a>
+            </div>
+          </div>
+          
+          <!-- Card 5 -->
+          <div class="blogger-card">
+            <img src="images/WhatsApp Image 2026-08-02 at 2.09.32 AM.jpeg" alt="Blogger Pick 5" loading="lazy">
+            <div class="blogger-overlay">
+              <p class="blogger-tag">SALE</p>
+              <p class="blogger-quote">Wrapped in midnight bloom.</p>
+              <div class="blogger-promo">
+                <strong>FLAT 50% off</strong>
+                <small>ON ENTIRE STOCK</small>
+              </div>
+              <a href="shop.html" class="btn-shop-look">Shop the look</a>
             </div>
           </div>
         </div>
-
-        <div class="product-grid" id="product-grid">
-          <!-- Products will be loaded dynamically from Sanity -->
-          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
-            <p>Loading products...</p>
-          </div>
-        </div>
-      </section>
-    </div>
+        
+        <button class="carousel-btn next-btn" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </section>
   </main>
 
   <!-- Footer -->
@@ -365,5 +381,16 @@
   </button>
 
   <script src="script.js"></script>
+  <script>
+    // Sync cart count from localStorage on page load
+    (function() {
+      try {
+        var cart = JSON.parse(localStorage.getItem('ayhira_cart') || '[]');
+        var count = cart.reduce(function(sum, item) { return sum + item.qty; }, 0);
+        var badge = document.getElementById('cart-count');
+        if (badge && count > 0) badge.textContent = count;
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>

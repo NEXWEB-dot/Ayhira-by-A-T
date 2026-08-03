@@ -1,0 +1,10 @@
+# Exclude Sanity Studio (has its own deployment)
+studio-ayhira/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp

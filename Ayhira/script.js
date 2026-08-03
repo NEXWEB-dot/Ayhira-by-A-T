@@ -26,17 +26,19 @@
     const scrollY = window.scrollY;
 
     // Add shadow on scroll
-    if (scrollY > 10) {
+    if (header && scrollY > 10) {
       header.classList.add('scrolled');
-    } else {
+    } else if (header) {
       header.classList.remove('scrolled');
     }
 
     // Back to top visibility
-    if (scrollY > 400) {
-      backToTop.classList.add('visible');
-    } else {
-      backToTop.classList.remove('visible');
+    if (backToTop) {
+      if (scrollY > 400) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
     }
 
     lastScrollY = scrollY;
@@ -140,12 +142,14 @@
   });
 
   // ===== BACK TO TOP =====
-  backToTop.addEventListener('click', function () {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (backToTop) {
+    backToTop.addEventListener('click', function () {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
-  });
+  }
 
   // ===== SORT FUNCTIONALITY =====
   if (sortSelect) {
@@ -298,11 +302,13 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function () {
       if (window.innerWidth > 992) {
-        mobileMenuToggle.classList.remove('active');
-        navMain.classList.remove('open');
-        sidebar.classList.remove('open');
-        sidebarOverlay.classList.remove('active');
-        sidebarOverlay.style.display = '';
+        if (mobileMenuToggle) mobileMenuToggle.classList.remove('active');
+        if (navMain) navMain.classList.remove('open');
+        if (sidebar) sidebar.classList.remove('open');
+        if (sidebarOverlay) {
+          sidebarOverlay.classList.remove('active');
+          sidebarOverlay.style.display = '';
+        }
         document.body.style.overflow = '';
       }
     }, 250);
@@ -331,13 +337,13 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       // Close mobile menu
-      if (navMain.classList.contains('open')) {
-        mobileMenuToggle.classList.remove('active');
+      if (navMain && navMain.classList.contains('open')) {
+        if (mobileMenuToggle) mobileMenuToggle.classList.remove('active');
         navMain.classList.remove('open');
         document.body.style.overflow = '';
       }
       // Close sidebar
-      if (sidebar.classList.contains('open')) {
+      if (sidebar && sidebar.classList.contains('open')) {
         closeSidebar();
       }
     }
@@ -458,6 +464,117 @@
         console.error('Error fetching products:', err);
         productGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Failed to load products.</p></div>';
       });
+  }
+
+  // ===== HOMEPAGE SANITY PRODUCT SECTIONS =====
+  const latestDropGrid = document.getElementById('latest-drop-grid');
+  const embroideredGrid = document.getElementById('embroidered-grid');
+
+  if (latestDropGrid || embroideredGrid) {
+    const SANITY_PROJECT = PROJECT_ID || 'sc8k5yfq';
+    const SANITY_DATASET = DATASET || 'production';
+
+    // Helper: build a Sanity CDN URL from a GROQ query
+    function sanityUrl(groqQuery) {
+      return `https://${SANITY_PROJECT}.api.sanity.io/v2023-05-03/data/query/${SANITY_DATASET}?query=${encodeURIComponent(groqQuery)}`;
+    }
+
+    // Helper: create a product card article element for the homepage
+    function createHomeProductCard(product) {
+      const formattedPrice = product.price ? product.price.toLocaleString() : '0';
+      const article = document.createElement('article');
+      article.className = 'product-card';
+      article.id = `home-product-${product._id}`;
+
+      article.innerHTML = `
+        <div class="product-card-image">
+          <img src="${product.imageUrl || 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
+        </div>
+        <div class="product-card-info">
+          <h3 class="product-card-title">${product.name}</h3>
+          <div class="product-card-price">
+            <span class="price-regular">Rs. ${formattedPrice}</span>
+          </div>
+        </div>
+      `;
+
+      // Navigate to product detail on click
+      article.addEventListener('click', function (e) {
+        if (e.target.closest('button')) return;
+        window.location.href = `product-detail.html?product=${product.slug}`;
+      });
+      article.style.cursor = 'pointer';
+
+      return article;
+    }
+
+    // Helper: render products into a grid container
+    function renderHomeGrid(container, products) {
+      container.innerHTML = '';
+
+      if (!products || products.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>No products found.</p></div>';
+        return;
+      }
+
+      products.forEach(function (product) {
+        container.appendChild(createHomeProductCard(product));
+      });
+
+      // Re-register IntersectionObserver for fade-in animations
+      if ('IntersectionObserver' in window) {
+        var homeObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.style.animationPlayState = 'running';
+              homeObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        container.querySelectorAll('.product-card').forEach(function (card) {
+          card.style.animationPlayState = 'paused';
+          homeObserver.observe(card);
+        });
+      }
+    }
+
+    // Fetch: LATEST DROP — latest 4 products ordered by creation date
+    if (latestDropGrid) {
+      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url }';
+
+      fetch(sanityUrl(latestQuery))
+        .then(function (res) { return res.json(); })
+        .then(function (data) { renderHomeGrid(latestDropGrid, data.result); })
+        .catch(function (err) {
+          console.error('Error fetching latest drop products:', err);
+          latestDropGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Failed to load products.</p></div>';
+        });
+    }
+
+    // Fetch: EMBROIDERED — 4 products with category == "embroidered"
+    if (embroideredGrid) {
+      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url }';
+
+      fetch(sanityUrl(embroideredQuery))
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          // If no embroidered products, fallback to showing any products
+          if (!data.result || data.result.length === 0) {
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url }';
+            fetch(sanityUrl(fallbackQuery))
+              .then(function (res2) { return res2.json(); })
+              .then(function (data2) { renderHomeGrid(embroideredGrid, data2.result); })
+              .catch(function () { renderHomeGrid(embroideredGrid, []); });
+          } else {
+            renderHomeGrid(embroideredGrid, data.result);
+          }
+        })
+        .catch(function (err) {
+          console.error('Error fetching embroidered products:', err);
+          embroideredGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Failed to load products.</p></div>';
+        });
+    }
   }
 
 })();
