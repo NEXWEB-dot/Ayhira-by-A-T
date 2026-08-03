@@ -19,6 +19,13 @@
   --color-rose: #C4787A;
   --color-sale: #C4444A;
 
+  /* Aliases for UI elements used in product detail & checkout */
+  --color-text: var(--color-charcoal);
+  --color-text-light: var(--color-warm-gray);
+  --color-border: var(--color-beige);
+  --color-surface: var(--color-white);
+  --color-background: var(--color-ivory);
+
   /* Typography */
   --font-heading: 'Cormorant Garamond', 'Georgia', serif;
   --font-body: 'Jost', 'Helvetica Neue', sans-serif;
