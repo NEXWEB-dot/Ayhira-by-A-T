@@ -447,7 +447,7 @@
       if (countEl) countEl.textContent = products.length;
 
       if (!products || products.length === 0) {
-        productGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>No products found in this category.</p></div>';
+        productGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Coming Soon</p></div>';
         return;
       }
 
@@ -601,7 +601,7 @@
       container.innerHTML = '';
 
       if (!products || products.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>No products found.</p></div>';
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Coming Soon</p></div>';
         return;
       }
 

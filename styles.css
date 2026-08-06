@@ -1626,8 +1626,9 @@ h1, h2, h3, h4, h5, h6 {
   transform: translate(-50%, -50%);
   text-align: center;
   color: var(--color-white);
-  z-index: 2;
+  z-index: 3;
   width: 100%;
+  pointer-events: none;
 }
 
 .hero-overlay h2 {
@@ -1674,6 +1675,69 @@ h1, h2, h3, h4, h5, h6 {
 
 .carousel-slide.active img {
   transform: scale(1);
+}
+
+/* ---- Hero clickable slide link ---- */
+.hero-slide-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hero-slide-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
+  z-index: 1;
+  transition: background 0.4s ease;
+}
+
+.hero-slide-link:hover::after {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.25) 50%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+.hero-slide-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Hero CTA button label ---- */
+.hero-cta {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: 0.55rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: transparent;
+  backdrop-filter: blur(4px);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero-slide-link:hover .hero-cta {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-dark);
+  border-color: transparent;
+  transform: translateY(-2px);
 }
 
 .home-main {
