@@ -50,8 +50,19 @@
     .swiper {
       width: 100%;
       aspect-ratio: 3/4;
+      max-height: 75vh;
       background-color: var(--color-surface);
       border-radius: 2px;
+    }
+
+    /* Fallback for browsers/webviews that don't support aspect-ratio —
+       without this, an unsupported browser has no width-driven height
+       rule to fall back on, and the skeleton's height:100% collapses
+       against whatever ancestor height happens to cascade down. */
+    @supports not (aspect-ratio: 1/1) {
+      .swiper {
+        height: 75vh;
+      }
     }
 
     .swiper-slide {
@@ -346,6 +357,13 @@
       display: none;
     }
 
+    /* Global guard: nothing on this page should be able to force
+       horizontal scroll on narrow viewports. */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
     /* ============================================================
        RESPONSIVE BREAKPOINTS
     ============================================================ */
@@ -371,8 +389,8 @@
       }
     }
 
-    /* ─ Mobile (≤ 640px) ─ */
-    @media (max-width: 640px) {
+    /* ─ Mobile (≤ 768px) ─ */
+    @media (max-width: 768px) {
       main.container {
         padding-left: 0.875rem;
         padding-right: 0.875rem;
@@ -387,7 +405,7 @@
       .product-detail-container {
         gap: 1.1rem;
         margin-top: 0.5rem;
-        margin-bottom: 5.5rem; /* space for sticky bar */
+        margin-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); /* space for sticky bar */
       }
 
       /* Full-bleed gallery — bleeds to screen edges */
@@ -398,10 +416,18 @@
         width: calc(100% + 1.75rem);
       }
 
-      /* Swiper takes full portrait height */
+      /* Swiper takes full portrait height, capped so it can never
+         dominate the viewport (e.g. while the skeleton is showing) */
       .swiper {
         aspect-ratio: 4/5;
+        max-height: 60vh;
         border-radius: 0;
+      }
+
+      @supports not (aspect-ratio: 1/1) {
+        .swiper {
+          height: 60vh;
+        }
       }
 
       /* Smaller navigation arrows */
@@ -540,7 +566,7 @@
     }
 
     /* ── Sticky Mobile Bottom Bar ── */
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       .mobile-sticky-bar {
         display: flex;
         position: fixed;
@@ -551,6 +577,7 @@
         background: var(--color-white, #fff);
         border-top: 1px solid var(--color-border, #e8ddd0);
         padding: 0.65rem 0.875rem;
+        padding-bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
         gap: 0.5rem;
         box-shadow: 0 -6px 24px rgba(42,35,30,0.1);
         align-items: stretch;
@@ -558,7 +585,9 @@
 
       .mobile-sticky-bar .mobile-atc {
         flex: 1.5;
-        padding: 0.85rem 0.75rem;
+        min-width: 0;
+        white-space: nowrap;
+        padding: 0.85rem 0.5rem;
         background-color: var(--color-espresso, #2a231e);
         color: var(--color-white, #fff);
         border: none;
@@ -578,7 +607,9 @@
 
       .mobile-sticky-bar .mobile-buy {
         flex: 1;
-        padding: 0.85rem 0.75rem;
+        min-width: 0;
+        white-space: nowrap;
+        padding: 0.85rem 0.5rem;
         background-color: transparent;
         color: var(--color-espresso, #2a231e);
         border: 1px solid var(--color-espresso, #2a231e);
@@ -875,8 +906,20 @@
       );
       var apiUrl = 'https://' + PROJECT_ID + '.api.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
-      fetch(apiUrl)
-        .then(function (res) { return res.json(); })
+      // Guard against a hung request leaving the skeleton (and the
+      // tall gallery placeholder) on screen forever with no feedback.
+      var fetchController = new AbortController();
+      var fetchTimedOut = false;
+      var fetchTimeoutId = setTimeout(function () {
+        fetchTimedOut = true;
+        fetchController.abort();
+      }, 12000);
+
+      fetch(apiUrl, { signal: fetchController.signal })
+        .then(function (res) {
+          clearTimeout(fetchTimeoutId);
+          return res.json();
+        })
         .then(function (data) {
           var product = data.result;
 
@@ -1056,9 +1099,24 @@
           }
         })
         .catch(function (err) {
+          clearTimeout(fetchTimeoutId);
           console.error('Error fetching product detail:', err);
-          document.getElementById('product-title').textContent = 'Error Loading Product';
-          document.getElementById('product-description').textContent = 'There was an error loading this product. Please try again.';
+
+          var title = document.getElementById('product-title');
+          var desc = document.getElementById('product-description');
+          title.innerHTML = 'Unable to Load Product';
+          desc.innerHTML = fetchTimedOut
+            ? 'This is taking longer than expected. Please check your connection and <a href="javascript:location.reload()">try again</a>.'
+            : 'Something went wrong loading this product. Please <a href="javascript:location.reload()">try again</a>.';
+          document.getElementById('product-category').textContent = '';
+          document.getElementById('product-price').textContent = '';
+
+          // Take the gallery out of its (otherwise endless) skeleton
+          // animation instead of leaving a full-height placeholder block.
+          var galleryWrapper = document.getElementById('product-gallery-wrapper');
+          galleryWrapper.innerHTML = '<div class="swiper-slide"><img src="https://via.placeholder.com/600x800?text=Unavailable" alt="Product image unavailable" loading="lazy"></div>';
+          document.getElementById('thumbSwiper').style.display = 'none';
+          new Swiper('#mainSwiper', { grabCursor: true });
         });
     })();
   </script>
