@@ -31,46 +31,6 @@
       margin-bottom: 6rem;
     }
     
-    @media (max-width: 992px) {
-      .product-detail-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-    }
-    
-    @media (max-width: 576px) {
-      .product-detail-container {
-        gap: 1.5rem;
-        margin-top: 1rem;
-        margin-bottom: 3rem;
-      }
-      
-      .product-info h1 {
-        font-size: 1.8rem;
-        margin-bottom: 0.75rem;
-      }
-      
-      .product-info .price {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-      }
-      
-      .product-info .description {
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-      }
-      
-      .add-to-cart-large {
-        padding: 0.8rem 1.5rem;
-        font-size: 0.85rem;
-      }
-      
-      .breadcrumb {
-        padding: 0.75rem 0;
-        font-size: 0.75rem;
-      }
-    }
-    
     .product-gallery {
       position: relative;
       width: 100%;
@@ -194,30 +154,6 @@
       color: var(--color-text-light);
     }
     
-    .color-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    
-    .color-chip {
-      padding: 0.45rem 1.1rem;
-      border: 1px solid var(--color-border);
-      background: transparent;
-      font-family: var(--font-primary);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      color: var(--color-text);
-    }
-    
-    .color-chip:hover,
-    .color-chip.active {
-      border-color: var(--color-text);
-      background: var(--color-text);
-      color: var(--color-white);
-    }
-
     /* Quantity selector */
     .quantity-row {
       display: flex;
@@ -371,6 +307,7 @@
       display: flex;
       gap: 0.5rem;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .breadcrumb a {
@@ -385,6 +322,185 @@
 
     .breadcrumb span {
       color: var(--color-border);
+    }
+
+    /* ===== RESPONSIVE ===== */
+
+    /* Tablet */
+    @media (max-width: 992px) {
+      .product-detail-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 5rem;
+      }
+
+      .product-gallery {
+        max-width: 100%;
+      }
+
+      .product-info h1 {
+        font-size: 2rem;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 576px) {
+      main.container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .product-detail-container {
+        gap: 1.25rem;
+        margin-top: 0.75rem;
+        margin-bottom: 6rem; /* space for sticky bar */
+      }
+
+      /* Edge-to-edge image gallery */
+      .product-gallery {
+        max-width: 100%;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        width: calc(100% + 2rem);
+      }
+
+      /* Hide thumbnail strip — pagination bullets show instead */
+      .swiper-thumbs {
+        display: none;
+      }
+
+      /* Swiper arrows smaller */
+      .swiper-button-next,
+      .swiper-button-prev {
+        width: 30px;
+        height: 30px;
+      }
+
+      .swiper-button-next::after,
+      .swiper-button-prev::after {
+        font-size: 11px;
+      }
+
+      .product-info .category {
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+      }
+
+      .product-info h1 {
+        font-size: 1.65rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.15;
+      }
+
+      .product-info .price {
+        font-size: 1.15rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .product-divider {
+        margin-bottom: 1rem;
+      }
+
+      .product-info .description {
+        font-size: 0.88rem;
+        line-height: 1.75;
+        margin-bottom: 1.25rem;
+      }
+
+      .quantity-row {
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .quantity-row label {
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+      }
+
+      /* Hide desktop CTA buttons — sticky bar replaces them */
+      .add-to-cart-large,
+      .buy-now-btn {
+        display: none;
+      }
+
+      .product-meta {
+        margin-top: 1.25rem;
+        padding-top: 1rem;
+      }
+
+      .product-meta-item {
+        font-size: 0.82rem;
+        flex-wrap: wrap;
+      }
+
+      .breadcrumb {
+        padding: 0.6rem 0;
+        font-size: 0.72rem;
+        gap: 0.35rem;
+      }
+    }
+
+    /* Sticky mobile bottom bar */
+    .mobile-sticky-bar {
+      display: none;
+    }
+
+    @media (max-width: 576px) {
+      .mobile-sticky-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 900;
+        background: var(--color-white, #fff);
+        border-top: 1px solid var(--color-border, #ddd);
+        padding: 0.75rem 1rem;
+        gap: 0.6rem;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      }
+
+      .mobile-sticky-bar .mobile-atc {
+        flex: 1;
+        padding: 0.9rem 1rem;
+        background-color: var(--color-text, #2a231e);
+        color: var(--color-white, #fff);
+        border: none;
+        font-family: var(--font-primary, sans-serif);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .mobile-sticky-bar .mobile-atc:hover {
+        background-color: var(--color-gold, #b8903a);
+      }
+
+      .mobile-sticky-bar .mobile-buy {
+        flex: 1;
+        padding: 0.9rem 1rem;
+        background-color: transparent;
+        color: var(--color-text, #2a231e);
+        border: 1px solid var(--color-text, #2a231e);
+        font-family: var(--font-primary, sans-serif);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.78rem;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .mobile-sticky-bar .mobile-buy:hover {
+        background-color: var(--color-text, #2a231e);
+        color: var(--color-white, #fff);
+      }
     }
   </style>
 </head>
@@ -589,6 +705,12 @@
   <button class="back-to-top" id="back-to-top" aria-label="Back to top">
     <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
   </button>
+
+  <!-- Mobile Sticky Bottom Bar (shown only on ≤576px) -->
+  <div class="mobile-sticky-bar" id="mobile-sticky-bar" aria-hidden="true">
+    <button class="mobile-atc" id="mobile-add-to-cart" aria-label="Add to cart">Add to Cart</button>
+    <a href="checkout.html" class="mobile-buy" id="mobile-buy-now" aria-label="Buy now">Buy Now</a>
+  </div>
 
   <!-- Swiper JS (must be before inline script) -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -808,6 +930,30 @@
             document.getElementById('add-to-cart-main').click();
             setTimeout(function () { window.location.href = 'checkout.html'; }, 300);
           });
+
+          // ---- Mobile Sticky Bar ----
+          var mobileBar = document.getElementById('mobile-sticky-bar');
+          if (mobileBar) {
+            mobileBar.removeAttribute('aria-hidden');
+
+            document.getElementById('mobile-add-to-cart').addEventListener('click', function () {
+              // Reuse the desktop handler
+              document.getElementById('add-to-cart-main').click();
+              var mBtn = this;
+              mBtn.textContent = 'Added ✓';
+              mBtn.style.backgroundColor = 'var(--color-gold)';
+              setTimeout(function () {
+                mBtn.textContent = 'Add to Cart';
+                mBtn.style.backgroundColor = '';
+              }, 2000);
+            });
+
+            document.getElementById('mobile-buy-now').addEventListener('click', function (e) {
+              e.preventDefault();
+              document.getElementById('add-to-cart-main').click();
+              setTimeout(function () { window.location.href = 'checkout.html'; }, 300);
+            });
+          }
         })
         .catch(function (err) {
           console.error('Error fetching product detail:', err);
