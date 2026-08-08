@@ -455,12 +455,13 @@
       products.forEach((product) => {
         const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
         const hasDiscount = product.discountPercent && product.discountPercent > 0;
-        const currentPrice = hasDiscount 
-          ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
+        const currentPrice = basePrice;
+        const oldPrice = hasDiscount 
+          ? Math.floor(basePrice / (1 - (product.discountPercent / 100))) 
           : basePrice;
           
         const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
-        const formattedOldPrice = basePrice ? basePrice.toLocaleString() : '0';
+        const formattedOldPrice = oldPrice ? oldPrice.toLocaleString() : '0';
 
         const article = document.createElement('article');
         article.className = 'product-card';
@@ -482,7 +483,7 @@
             </div>
           </div>
           <div class="product-card-info">
-            <p class="product-card-category">${product.category || 'Uncategorized'}</p>
+            <p class="product-card-category">${catLabel}</p>
             <h3 class="product-card-title">${product.name}</h3>
             <div class="product-card-price">
               ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
@@ -516,8 +517,7 @@
           try { cart = JSON.parse(localStorage.getItem('ayhira_cart') || '[]'); } catch(e) {}
           
           const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
-          const hasDiscount = product.discountPercent && product.discountPercent > 0;
-          const currentPrice = hasDiscount ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) : basePrice;
+          const currentPrice = basePrice;
           
           const existingIdx = cart.findIndex(item => item.id === product._id);
           if (existingIdx > -1) {
@@ -608,12 +608,13 @@
     function createHomeProductCard(product) {
       const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
       const hasDiscount = product.discountPercent && product.discountPercent > 0;
-      const currentPrice = hasDiscount 
-        ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
+      const currentPrice = basePrice;
+      const oldPrice = hasDiscount 
+        ? Math.floor(basePrice / (1 - (product.discountPercent / 100))) 
         : basePrice;
         
       const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
-      const formattedOldPrice = basePrice ? basePrice.toLocaleString() : '0';
+      const formattedOldPrice = oldPrice ? oldPrice.toLocaleString() : '0';
 
       const article = document.createElement('article');
       article.className = 'product-card';

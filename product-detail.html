@@ -1174,9 +1174,11 @@
             var hasDiscount = product.discountPercent && product.discountPercent > 0;
             
             if (hasDiscount) {
-              var discountedPrice = Math.floor(amount - (amount * (product.discountPercent / 100)));
-              priceEl.innerHTML = '<span style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ' + amount.toLocaleString() + '</span>' + 
-                                  '<span style="color: #e74c3c;">Rs. ' + discountedPrice.toLocaleString() + '</span>' +
+              // amount is the actual final selling price (the real price from sanity)
+              // oldPrice is inflated to create the illusion of a discount
+              var oldPrice = Math.floor(amount / (1 - (product.discountPercent / 100)));
+              priceEl.innerHTML = '<span style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ' + oldPrice.toLocaleString() + '</span>' + 
+                                  '<span style="color: #e74c3c;">Rs. ' + amount.toLocaleString() + '</span>' +
                                   '<span class="product-badge badge-sale" style="display:inline-block; position:relative; background:#e74c3c; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; margin-left:1rem; transform:translateY(-2px);">-' + product.discountPercent + '%</span>';
             } else {
               priceEl.textContent = 'Rs. ' + (amount ? amount.toLocaleString() : '0');
@@ -1185,8 +1187,8 @@
 
           // ---- Populate Meta ----
           var catLabel = product.category
-            ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
-            : 'Uncategorized';
+            ? product.category.replace(/-/g, ' ').toUpperCase()
+            : 'UNCATEGORIZED';
 
           document.title = product.name + ' — Ayhira by A&T';
           document.getElementById('breadcrumb-product-name').textContent = product.name;
@@ -1341,10 +1343,7 @@
             if (activeChip) selectedColor = activeChip.textContent;
 
             var basePrice = selectedStitchingChoice ? selectedStitchingChoice.price : product.price;
-            var hasDiscount = product.discountPercent && product.discountPercent > 0;
-            var cartPrice = hasDiscount 
-              ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
-              : basePrice;
+            var cartPrice = basePrice;
             var stitchingLabel = selectedStitchingChoice ? selectedStitchingChoice.label : '';
 
             var cart = getCart();
