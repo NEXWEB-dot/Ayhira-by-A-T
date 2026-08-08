@@ -691,8 +691,73 @@
       .mobile-sticky-bar .mobile-buy:hover,
       .mobile-sticky-bar .mobile-buy:active {
         background-color: var(--color-espresso, #2a231e);
-        color: var(--color-white, #fff);
+        color: #2A231E;
       }
+    }
+
+    /* ===== SIZE GUIDE MODAL ===== */
+    .size-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .size-modal {
+      background: #fff;
+      padding: 2.5rem 2rem;
+      border-radius: 4px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .size-modal-close {
+      position: absolute;
+      top: 1rem; right: 1.5rem;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      background: none; border: none;
+      color: #333;
+    }
+    .size-table-wrapper {
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+    .size-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.85rem;
+      min-width: 500px;
+    }
+    .size-table th {
+      background: #000;
+      color: #fff;
+      padding: 1rem;
+      font-weight: 500;
+      border: 1px solid #333;
+    }
+    .size-table td {
+      padding: 1rem;
+      border: 1px solid #eee;
+      color: #333;
+    }
+    .size-guide-btn {
+      background: none;
+      border: none;
+      color: #C4A064;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+      font-family: inherit;
+      font-size: 0.8rem;
+      margin-left: 1rem;
     }
   </style>
 </head>
@@ -804,7 +869,10 @@
         
         <!-- Stitching -->
         <div class="product-options" id="stitching-options-container" style="display:none;">
-          <h4>Stitching</h4>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <h4 style="margin: 0;">Stitching</h4>
+            <button class="size-guide-btn" id="open-size-guide" aria-label="View Size Guide">View Size Chart</button>
+          </div>
           <div class="stitching-options" id="stitching-options"></div>
         </div>
 
@@ -829,7 +897,7 @@
           </div>
           <div class="product-meta-item">
             <span>Delivery</span>
-            <span>Free on orders above Rs. 6,000</span>
+            <span>Rs. 250 Flat Rate</span>
           </div>
           <div class="product-meta-item">
             <span>Return</span>
@@ -870,7 +938,7 @@
         <ul>
           <li><a href="#">About Us</a></li>
           <li><a href="#">Contact</a></li>
-          <li><a href="#">Size Guide</a></li>
+          <li><a href="#" id="footer-size-guide">Size Guide</a></li>
           <li><a href="#">Shipping Policy</a></li>
         </ul>
       </div>
@@ -908,6 +976,56 @@
   <div class="mobile-sticky-bar" id="mobile-sticky-bar" aria-hidden="true">
     <button class="mobile-atc" id="mobile-add-to-cart" aria-label="Add to cart">Add to Cart</button>
     <a href="checkout.html" class="mobile-buy" id="mobile-buy-now" aria-label="Buy now">Buy Now</a>
+  </div>
+
+  <!-- Size Guide Modal -->
+  <div class="size-modal-overlay" id="size-modal-overlay">
+    <div class="size-modal">
+      <button class="size-modal-close" id="close-size-guide">&times;</button>
+      <h2 style="margin-bottom:1.5rem; font-family:'Georgia',serif;">Size Guide</h2>
+      
+      <div class="size-table-wrapper">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>Shirt Size</th>
+              <th>Extra Small</th>
+              <th>Small</th>
+              <th>Medium</th>
+              <th>Large</th>
+              <th>Extra Large</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Length</td><td>46</td><td>47</td><td>47</td><td>47</td><td>47</td></tr>
+            <tr><td>Shoulder</td><td>13.5</td><td>14</td><td>14.5</td><td>15</td><td>16</td></tr>
+            <tr><td>Chest</td><td>17.5</td><td>19</td><td>20</td><td>22</td><td>24</td></tr>
+            <tr><td>Sleeve Length</td><td>22</td><td>22</td><td>23</td><td>24</td><td>24</td></tr>
+            <tr><td>Sleeve Opening</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="size-table-wrapper">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>Trouser Size</th>
+              <th>Extra Small</th>
+              <th>Small</th>
+              <th>Medium</th>
+              <th>Large</th>
+              <th>Extra Large</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Length</td><td>36</td><td>37</td><td>38</td><td>39</td><td>39</td></tr>
+            <tr><td>Bottom</td><td>24</td><td>24</td><td>24</td><td>24</td><td>24</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="text-align:center; font-size:0.8rem; color:#666; margin-top:1rem;">Measurements are in inches.</p>
+    </div>
   </div>
 
   <!-- Swiper JS (must be before inline script) -->
@@ -1232,7 +1350,37 @@
           document.getElementById('thumbSwiper').style.display = 'none';
           new Swiper('#mainSwiper', { grabCursor: true });
         });
-    })();
+    });
+
+    // ===== SIZE GUIDE MODAL LOGIC =====
+    var sizeModalOverlay = document.getElementById('size-modal-overlay');
+    var openSizeGuideBtn = document.getElementById('open-size-guide');
+    var closeSizeGuideBtn = document.getElementById('close-size-guide');
+    var footerSizeGuide = document.getElementById('footer-size-guide');
+    
+    function openSizeModal(e) {
+      if(e) e.preventDefault();
+      sizeModalOverlay.style.display = 'flex';
+    }
+
+    if(openSizeGuideBtn) {
+      openSizeGuideBtn.addEventListener('click', openSizeModal);
+    }
+    if(footerSizeGuide) {
+      footerSizeGuide.addEventListener('click', openSizeModal);
+    }
+    if(closeSizeGuideBtn) {
+      closeSizeGuideBtn.addEventListener('click', function() {
+        sizeModalOverlay.style.display = 'none';
+      });
+    }
+    if(sizeModalOverlay) {
+      sizeModalOverlay.addEventListener('click', function(e) {
+        if(e.target === sizeModalOverlay) {
+          sizeModalOverlay.style.display = 'none';
+        }
+      });
+    }
   </script>
 </body>
 </html>
