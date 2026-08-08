@@ -463,6 +463,10 @@
         const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
         const formattedOldPrice = oldPrice ? oldPrice.toLocaleString() : '0';
 
+        const catLabel = product.category 
+          ? product.category.replace(/-/g, ' ').toUpperCase()
+          : 'UNCATEGORIZED';
+
         const article = document.createElement('article');
         article.className = 'product-card';
         article.id = `product-${product._id}`;
@@ -615,6 +619,10 @@
         
       const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
       const formattedOldPrice = oldPrice ? oldPrice.toLocaleString() : '0';
+
+      const catLabel = product.category 
+        ? product.category.replace(/-/g, ' ').toUpperCase()
+        : 'UNCATEGORIZED';
 
       const article = document.createElement('article');
       article.className = 'product-card';
