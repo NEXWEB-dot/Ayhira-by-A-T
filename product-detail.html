@@ -182,6 +182,55 @@
       color: var(--color-text-light);
     }
 
+    /* ── Stitching ── */
+    .stitching-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .stitching-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.15rem;
+      padding: 0.6rem 1.1rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      font-family: var(--font-body);
+      cursor: pointer;
+      line-height: 1.3;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .stitching-chip .stitching-chip-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .stitching-chip .stitching-chip-price {
+      font-size: 0.76rem;
+      color: var(--color-text-light);
+    }
+
+    .stitching-chip:hover {
+      border-color: var(--color-espresso);
+    }
+
+    .stitching-chip.active {
+      background-color: var(--color-espresso);
+      border-color: var(--color-espresso);
+    }
+
+    .stitching-chip.active .stitching-chip-label {
+      color: var(--color-white);
+    }
+
+    .stitching-chip.active .stitching-chip-price {
+      color: var(--color-cream);
+    }
+
     /* ── Quantity ── */
     .quantity-row {
       display: flex;
@@ -488,6 +537,18 @@
         margin-bottom: 0.45rem;
       }
 
+      .stitching-chip {
+        padding: 0.5rem 0.85rem;
+      }
+
+      .stitching-chip .stitching-chip-label {
+        font-size: 0.78rem;
+      }
+
+      .stitching-chip .stitching-chip-price {
+        font-size: 0.7rem;
+      }
+
       /* ── Quantity row ── */
       .quantity-row {
         gap: 0.6rem;
@@ -741,6 +802,12 @@
           <div class="skeleton" style="width:95%; height:1em;"></div>
         </div>
         
+        <!-- Stitching -->
+        <div class="product-options" id="stitching-options-container" style="display:none;">
+          <h4>Stitching</h4>
+          <div class="stitching-options" id="stitching-options"></div>
+        </div>
+
         <!-- Quantity -->
         <div class="quantity-row" id="quantity-row" style="display:none;">
           <label>Quantity</label>
@@ -902,7 +969,7 @@
       var PROJECT_ID = 'sc8k5yfq';
       var DATASET = 'production';
       var query = encodeURIComponent(
-        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, category, description, colors, "galleryUrls": gallery[].asset->url }'
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
       );
       var apiUrl = 'https://' + PROJECT_ID + '.api.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
@@ -929,6 +996,10 @@
             return;
           }
 
+          function renderPrice(amount) {
+            document.getElementById('product-price').textContent = 'Rs. ' + (amount ? amount.toLocaleString() : '0');
+          }
+
           // ---- Populate Meta ----
           var catLabel = product.category
             ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
@@ -938,7 +1009,7 @@
           document.getElementById('breadcrumb-product-name').textContent = product.name;
           document.getElementById('product-title').textContent = product.name;
           document.getElementById('product-category').textContent = catLabel;
-          document.getElementById('product-price').textContent = 'Rs. ' + (product.price ? product.price.toLocaleString() : '0');
+          renderPrice(product.price);
           document.getElementById('product-description').textContent = product.description || 'Premium quality garment crafted with care and attention to detail.';
 
           // Product meta panel
@@ -947,6 +1018,43 @@
 
           // Show quantity row
           document.getElementById('quantity-row').style.display = 'flex';
+
+          // ---- Stitching (Stitched / Unstitched) ----
+          var selectedStitchingChoice = null; // {label, price}, or null if this product has no stitching options
+          var stitching = product.stitching || {};
+          var stitchingChoices = [];
+          if (stitching.unstitchedPrice) {
+            stitchingChoices.push({ label: 'Unstitched', price: stitching.unstitchedPrice });
+          }
+          if (stitching.stitchedPrice) {
+            stitchingChoices.push({ label: 'Stitched', price: stitching.stitchedPrice });
+          }
+
+          if (stitchingChoices.length > 0) {
+            var stitchingContainer = document.getElementById('stitching-options-container');
+            var stitchingDiv = document.getElementById('stitching-options');
+            stitchingContainer.style.display = 'block';
+
+            stitchingChoices.forEach(function (choice, index) {
+              var chip = document.createElement('button');
+              chip.type = 'button';
+              chip.className = 'stitching-chip' + (index === 0 ? ' active' : '');
+              chip.innerHTML =
+                '<span class="stitching-chip-label">' + choice.label + '</span>' +
+                '<span class="stitching-chip-price">Rs. ' + choice.price.toLocaleString() + '</span>';
+              chip.addEventListener('click', function () {
+                document.querySelectorAll('.stitching-chip').forEach(function (c) { c.classList.remove('active'); });
+                chip.classList.add('active');
+                selectedStitchingChoice = choice;
+                renderPrice(choice.price);
+              });
+              stitchingDiv.appendChild(chip);
+            });
+
+            // Default to the first available choice
+            selectedStitchingChoice = stitchingChoices[0];
+            renderPrice(stitchingChoices[0].price);
+          }
 
           // ---- Colors ----
           if (product.colors && product.colors.length > 0) {
@@ -1025,9 +1133,12 @@
             var activeChip = document.querySelector('.color-chip.active');
             if (activeChip) selectedColor = activeChip.textContent;
 
+            var cartPrice = selectedStitchingChoice ? selectedStitchingChoice.price : product.price;
+            var stitchingLabel = selectedStitchingChoice ? selectedStitchingChoice.label : '';
+
             var cart = getCart();
             var existingIdx = cart.findIndex(function (item) {
-              return item.id === product._id && item.color === selectedColor;
+              return item.id === product._id && item.color === selectedColor && item.stitching === stitchingLabel;
             });
 
             if (existingIdx > -1) {
@@ -1037,9 +1148,10 @@
                 id: product._id || productSlug,
                 slug: productSlug,
                 name: product.name,
-                price: product.price,
+                price: cartPrice,
                 image: images[0],
                 color: selectedColor,
+                stitching: stitchingLabel,
                 qty: qty,
               });
             }

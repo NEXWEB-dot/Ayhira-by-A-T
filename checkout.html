@@ -12,6 +12,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌸%3C/text%3E%3C/svg%3E">
 
@@ -796,7 +799,22 @@
                 <input type="radio" name="payment" value="cod" id="pay-cod" checked>
                 <div class="payment-option-label">
                   <strong>Cash on Delivery (COD)</strong>
-                  <p>Pay in cash when your order arrives at your doorstep.</p>
+                  <p>Pay in cash when your order arrives at your doorstep. Order confirmation sent to your email.</p>
+                </div>
+                <div class="payment-icons">
+                  <span style="font-size:1.3rem;" title="Cash on Delivery">💵</span>
+                </div>
+              </label>
+
+              <!-- Easypaisa -->
+              <label class="payment-option" id="easypaisa-option">
+                <input type="radio" name="payment" value="easypaisa" id="pay-easypaisa">
+                <div class="payment-option-label">
+                  <strong>Easypaisa</strong>
+                  <p>Send payment via Easypaisa mobile wallet. WhatsApp opens to share your payment details.</p>
+                </div>
+                <div class="payment-icons">
+                  <span style="font-size:1.3rem;" title="Easypaisa">📱</span>
                 </div>
               </label>
 
@@ -805,32 +823,34 @@
                 <input type="radio" name="payment" value="bank" id="pay-bank">
                 <div class="payment-option-label">
                   <strong>Bank Transfer</strong>
-                  <p>Transfer to our bank account. Order is processed after payment confirmation.</p>
+                  <p>Transfer to our bank account. WhatsApp opens so you can share your payment screenshot.</p>
                 </div>
-              </label>
-
-              <!-- WhatsApp Order -->
-              <label class="payment-option" id="whatsapp-option">
-                <input type="radio" name="payment" value="whatsapp" id="pay-whatsapp">
-                <div class="payment-option-label">
-                  <strong>Order via WhatsApp</strong>
-                  <p>Complete your order through WhatsApp for personalized assistance.</p>
+                <div class="payment-icons">
+                  <span style="font-size:1.3rem;" title="Bank Transfer">🏦</span>
                 </div>
               </label>
             </div>
 
             <!-- COD Info -->
             <div class="cod-info" id="cod-info" style="display:block;">
-              💡 Cash on Delivery is available across Pakistan. A Rs. 150 COD fee applies to orders below Rs. 6,000.
+              💡 Cash on Delivery is available across Pakistan. An order confirmation email will be sent to you automatically.
+            </div>
+
+            <!-- Easypaisa Info -->
+            <div class="cod-info" id="easypaisa-info">
+              📱 <strong>Easypaisa Details:</strong><br>
+              Account Title: Ayhira by A&amp;T<br>
+              Easypaisa Number: <strong>0300-0000000</strong><br>
+              After sending payment, click <em>"Place Order"</em> — WhatsApp will open so you can share your transaction ID &amp; screenshot.
             </div>
 
             <!-- Bank Info -->
             <div class="cod-info" id="bank-info">
-              🏦 <strong>Bank Details:</strong><br>
+              🏦 <strong>Bank Transfer Details:</strong><br>
               Account Title: Ayhira by A&amp;T<br>
               Bank: HBL / Meezan Bank<br>
               Account No: <em>(provided on confirmation)</em><br>
-              Please send payment screenshot to our WhatsApp after transfer.
+              After transfer, click <em>"Place Order"</em> — WhatsApp will open so you can share your payment screenshot.
             </div>
 
             <button type="submit" class="place-order-btn" id="place-order-btn">
@@ -1016,7 +1036,7 @@
       }
 
       function updateTotals(subtotal) {
-        var shipping = subtotal >= 6000 ? 0 : 200;
+        var shipping = subtotal >= 6000 ? 0 : 250;
         var discount = Math.floor(subtotal * appliedDiscount);
         var total = subtotal - discount + shipping;
 
@@ -1037,6 +1057,21 @@
       renderCart();
 
       /* ============================
+         EMAILJS INIT
+      ==============================*/
+      // Replace these with your actual EmailJS credentials
+      var EMAILJS_PUBLIC_KEY  = 'L_uweFz9-KMXqce_A';
+      var EMAILJS_SERVICE_ID  = 'service_thvtf8g';
+      var EMAILJS_TEMPLATE_ID = 'template_yn1hf8c';
+
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+      /* ============================
+         WHATSAPP NUMBER
+      ==============================*/
+      var WHATSAPP_NUMBER = '923001234567'; // Replace with your actual WhatsApp number (no +)
+
+      /* ============================
          PAYMENT METHOD TOGGLE
       ==============================*/
       var paymentOptions = document.querySelectorAll('.payment-option');
@@ -1046,8 +1081,9 @@
           this.classList.add('selected');
 
           var val = this.querySelector('input[type="radio"]').value;
-          document.getElementById('cod-info').style.display = val === 'cod' ? 'block' : 'none';
-          document.getElementById('bank-info').style.display = val === 'bank' ? 'block' : 'none';
+          document.getElementById('cod-info').style.display        = val === 'cod'        ? 'block' : 'none';
+          document.getElementById('easypaisa-info').style.display  = val === 'easypaisa'  ? 'block' : 'none';
+          document.getElementById('bank-info').style.display        = val === 'bank'       ? 'block' : 'none';
         });
       });
 
@@ -1115,7 +1151,6 @@
         }
 
         if (!validateForm()) {
-          // Scroll to first error
           var firstErr = document.querySelector('input[style*="e74c3c"], select[style*="e74c3c"]');
           if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
@@ -1126,39 +1161,92 @@
         btn.disabled = true;
 
         var paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+        var cart          = getCart();
+        var firstName     = document.getElementById('first-name').value.trim();
+        var lastName      = document.getElementById('last-name').value.trim();
+        var email         = document.getElementById('email').value.trim();
+        var phone         = document.getElementById('phone').value.trim();
+        var address       = document.getElementById('address').value.trim();
+        var city          = document.getElementById('city').value.trim();
+        var province      = document.getElementById('province').value;
+        var notes         = document.getElementById('notes').value.trim();
+        var subtotal      = getSubtotal(cart);
+        var shipping      = subtotal >= 6000 ? 0 : 250;
+        var discount      = Math.floor(subtotal * appliedDiscount);
+        var total         = subtotal - discount + shipping;
+        var orderNo       = 'AYH-' + Date.now().toString().slice(-5);
 
-        // If WhatsApp, build a message and open WhatsApp
-        if (paymentMethod === 'whatsapp') {
-          var cart = getCart();
-          var msg = 'Hi! I would like to place an order:%0A%0A';
+        // Build human-readable cart items string
+        var itemsList = cart.map(function (item) {
+          return item.name
+            + (item.color ? ' (' + item.color + ')' : '')
+            + ' x' + item.qty
+            + ' — Rs. ' + (item.price * item.qty).toLocaleString();
+        }).join('\n');
+
+        /* ---- Easypaisa & Bank Transfer → WhatsApp ---- */
+        if (paymentMethod === 'easypaisa' || paymentMethod === 'bank') {
+          var methodLabel = paymentMethod === 'easypaisa' ? 'Easypaisa' : 'Bank Transfer';
+          var waMsg = 'Hi! I would like to place an order via *' + methodLabel + '*:%0A%0A';
           cart.forEach(function (item) {
-            msg += '▸ ' + item.name + (item.color ? ' (' + item.color + ')' : '') + ' x' + item.qty + ' — Rs. ' + (item.price * item.qty).toLocaleString() + '%0A';
+            waMsg += '%E2%96%B8 ' + item.name
+              + (item.color ? ' (' + item.color + ')' : '')
+              + ' x' + item.qty
+              + ' %E2%80%94 Rs. ' + (item.price * item.qty).toLocaleString() + '%0A';
           });
-          msg += '%0ASubtotal: Rs. ' + getSubtotal(cart).toLocaleString();
-          msg += '%0AName: ' + document.getElementById('first-name').value + ' ' + document.getElementById('last-name').value;
-          msg += '%0ACity: ' + document.getElementById('city').value;
-          msg += '%0APhone: ' + document.getElementById('phone').value;
-          window.open('https://wa.me/923001234567?text=' + msg, '_blank');
+          waMsg += '%0A*Order No:* ' + orderNo;
+          waMsg += '%0A*Subtotal:* Rs. ' + subtotal.toLocaleString();
+          if (discount > 0) waMsg += '%0A*Discount:* -Rs. ' + discount.toLocaleString();
+          waMsg += '%0A*Shipping:* ' + (shipping === 0 ? 'Free' : 'Rs. ' + shipping.toLocaleString());
+          waMsg += '%0A*Total:* Rs. ' + total.toLocaleString();
+          waMsg += '%0A%0A*Name:* ' + firstName + ' ' + lastName;
+          waMsg += '%0A*Phone:* ' + phone;
+          waMsg += '%0A*Address:* ' + address + ', ' + city + ', ' + province;
+          if (notes) waMsg += '%0A*Notes:* ' + notes;
+          waMsg += '%0A%0APlease share your payment screenshot / transaction ID to confirm the order. Thank you! 🌸';
+
+          window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + waMsg, '_blank');
           btn.textContent = 'Place Order';
           btn.disabled = false;
           return;
         }
 
-        // Simulate order placement (in a real app, you'd call a backend/API here)
-        setTimeout(function () {
-          // Clear cart after successful order
-          saveCart([]);
+        /* ---- Cash on Delivery → Place order + EmailJS ---- */
+        // Show success overlay immediately
+        saveCart([]);
+        document.getElementById('success-order-no').textContent = 'Order #' + orderNo;
+        document.getElementById('order-success-overlay').classList.add('active');
+        btn.textContent = 'Place Order';
+        btn.disabled = false;
 
-          // Generate a mock order number
-          var orderNo = 'AYH-' + Date.now().toString().slice(-5);
-          document.getElementById('success-order-no').textContent = 'Order #' + orderNo;
+        // Send confirmation email via EmailJS
+        // Variable names match the template exactly
+        var templateParams = {
+          to_email:    email,
+          to_name:     firstName + ' ' + lastName,
+          reply_to:    email,
+          order_id:    orderNo,
+          orders:      cart.map(function (item) {
+            return {
+              name:  item.name + (item.color ? ' (' + item.color + ')' : ''),
+              units: item.qty,
+              price: 'Rs. ' + (item.price * item.qty).toLocaleString()
+            };
+          }),
+          cost: {
+            shipping: shipping === 0 ? 'Free' : 'Rs. ' + shipping.toLocaleString(),
+            tax:      discount > 0 ? '-Rs. ' + discount.toLocaleString() : 'Rs. 0',
+            total:    'Rs. ' + total.toLocaleString()
+          }
+        };
 
-          // Show success overlay
-          document.getElementById('order-success-overlay').classList.add('active');
-
-          btn.textContent = 'Place Order';
-          btn.disabled = false;
-        }, 1500);
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+          .then(function () {
+            console.log('Order confirmation email sent successfully.');
+          })
+          .catch(function (err) {
+            console.warn('EmailJS error (order still placed):', err);
+          });
       });
 
       // Add live validation on blur
