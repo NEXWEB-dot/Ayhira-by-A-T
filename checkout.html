@@ -904,7 +904,7 @@
             </div>
             <div class="summary-row">
               <span>Shipping</span>
-              <span id="shipping-val">Free</span>
+              <span id="shipping-val">Rs. 250</span>
             </div>
             <div class="summary-row total">
               <span>Total</span>
@@ -1036,12 +1036,12 @@
       }
 
       function updateTotals(subtotal) {
-        var shipping = subtotal >= 6000 ? 0 : 250;
+        var shipping = 250;
         var discount = Math.floor(subtotal * appliedDiscount);
         var total = subtotal - discount + shipping;
 
         document.getElementById('subtotal-val').textContent = 'Rs. ' + subtotal.toLocaleString();
-        document.getElementById('shipping-val').textContent = shipping === 0 ? 'Free' : 'Rs. ' + shipping.toLocaleString();
+        document.getElementById('shipping-val').textContent = 'Rs. ' + shipping.toLocaleString();
         document.getElementById('total-val').textContent = 'Rs. ' + total.toLocaleString();
 
         var discRow = document.getElementById('discount-row');
@@ -1172,7 +1172,7 @@
         var province      = document.getElementById('province').value;
         var notes         = document.getElementById('notes').value.trim();
         var subtotal      = getSubtotal(cart);
-        var shipping      = subtotal >= 6000 ? 0 : 250;
+        var shipping      = 250;
         var discount      = Math.floor(subtotal * appliedDiscount);
         var total         = subtotal - discount + shipping;
         var orderNo       = 'AYH-' + Date.now().toString().slice(-5);
@@ -1198,7 +1198,7 @@
           waMsg += '%0A*Order No:* ' + orderNo;
           waMsg += '%0A*Subtotal:* Rs. ' + subtotal.toLocaleString();
           if (discount > 0) waMsg += '%0A*Discount:* -Rs. ' + discount.toLocaleString();
-          waMsg += '%0A*Shipping:* ' + (shipping === 0 ? 'Free' : 'Rs. ' + shipping.toLocaleString());
+          waMsg += '%0A*Shipping:* Rs. ' + shipping.toLocaleString();
           waMsg += '%0A*Total:* Rs. ' + total.toLocaleString();
           waMsg += '%0A%0A*Name:* ' + firstName + ' ' + lastName;
           waMsg += '%0A*Phone:* ' + phone;
@@ -1235,7 +1235,7 @@
             };
           }),
           cost: {
-            shipping: shipping === 0 ? 'Free' : 'Rs. ' + shipping.toLocaleString(),
+            shipping: 'Rs. ' + shipping.toLocaleString(),
             tax:      discount > 0 ? '-Rs. ' + discount.toLocaleString() : 'Rs. 0',
             total:    'Rs. ' + total.toLocaleString()
           }

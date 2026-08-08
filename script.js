@@ -534,7 +534,7 @@
     const PROJECT_ID = 'sc8k5yfq';
     const DATASET = 'production';
     const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url, "isSale": false, "isNew": false}');
-    const url = `https://${PROJECT_ID}.api.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
+    const url = `https://${PROJECT_ID}.apicdn.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
 
     fetch(url)
       .then(res => res.json())
@@ -564,7 +564,7 @@
 
     // Helper: build a Sanity CDN URL from a GROQ query
     function sanityUrl(groqQuery) {
-      return `https://${SANITY_PROJECT}.api.sanity.io/v2023-05-03/data/query/${SANITY_DATASET}?query=${encodeURIComponent(groqQuery)}`;
+      return `https://${SANITY_PROJECT}.apicdn.sanity.io/v2023-05-03/data/query/${SANITY_DATASET}?query=${encodeURIComponent(groqQuery)}`;
     }
 
     // Helper: create a product card article element for the homepage
@@ -576,7 +576,7 @@
 
       article.innerHTML = `
         <div class="product-card-image">
-          <img src="${product.imageUrl || 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
+          <img src="${product.imageUrl ? product.imageUrl + '?w=800&q=80&fit=max&auto=format' : 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
         </div>
         <div class="product-card-info">
           <h3 class="product-card-title">${product.name}</h3>

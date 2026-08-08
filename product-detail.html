@@ -971,7 +971,7 @@
       var query = encodeURIComponent(
         '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
       );
-      var apiUrl = 'https://' + PROJECT_ID + '.api.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
+      var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
       // Guard against a hung request leaving the skeleton (and the
       // tall gallery placeholder) on screen forever with no feedback.
@@ -1084,16 +1084,18 @@
             : ['https://via.placeholder.com/600x800?text=No+Image'];
 
           images.forEach(function (imgUrl) {
-            // Main slide
+            // Main slide (high res)
+            var mainImgUrl = imgUrl.indexOf('placeholder') === -1 ? imgUrl + '?w=1200&q=80&fit=max&auto=format' : imgUrl;
             var slide = document.createElement('div');
             slide.className = 'swiper-slide';
-            slide.innerHTML = '<img src="' + imgUrl + '" alt="' + product.name + '" loading="lazy">';
+            slide.innerHTML = '<img src="' + mainImgUrl + '" alt="' + product.name + '" loading="lazy">';
             galleryWrapper.appendChild(slide);
 
-            // Thumb slide
+            // Thumb slide (low res)
+            var thumbImgUrl = imgUrl.indexOf('placeholder') === -1 ? imgUrl + '?w=300&q=80&fit=max&auto=format' : imgUrl;
             var thumb = document.createElement('div');
             thumb.className = 'swiper-slide';
-            thumb.innerHTML = '<img src="' + imgUrl + '" alt="thumbnail" loading="lazy">';
+            thumb.innerHTML = '<img src="' + thumbImgUrl + '" alt="thumbnail" loading="lazy">';
             thumbsWrapper.appendChild(thumb);
           });
 
