@@ -454,7 +454,6 @@
       productGrid.innerHTML = '';
       products.forEach((product) => {
         const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
-        const prefix = (product.stitching && product.stitching.unstitchedPrice) ? 'Unstitched - ' : '';
         const hasDiscount = product.discountPercent && product.discountPercent > 0;
         const currentPrice = hasDiscount 
           ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
@@ -487,7 +486,7 @@
             <h3 class="product-card-title">${product.name}</h3>
             <div class="product-card-price">
               ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
-              <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>${prefix}Rs. ${formattedPrice}</span>
+              <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
             </div>
           </div>
         `;
@@ -608,7 +607,6 @@
     // Helper: create a product card article element for the homepage
     function createHomeProductCard(product) {
       const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
-      const prefix = (product.stitching && product.stitching.unstitchedPrice) ? 'Unstitched - ' : '';
       const hasDiscount = product.discountPercent && product.discountPercent > 0;
       const currentPrice = hasDiscount 
         ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
@@ -631,7 +629,7 @@
           <h3 class="product-card-title">${product.name}</h3>
           <div class="product-card-price">
             ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
-            <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>${prefix}Rs. ${formattedPrice}</span>
+            <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
           </div>
         </div>
       `;
