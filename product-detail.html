@@ -1094,7 +1094,7 @@
       var PROJECT_ID = 'sc8k5yfq';
       var DATASET = 'production';
       var query = encodeURIComponent(
-        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
       );
       var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
@@ -1151,8 +1151,30 @@
           document.getElementById('meta-category').textContent = catLabel;
           document.getElementById('product-meta').style.display = 'block';
 
-          // Show quantity row
-          document.getElementById('quantity-row').style.display = 'flex';
+          // Show quantity row and logic if not sold out
+          if (product.isSoldOut) {
+            var addBtn = document.getElementById('add-to-cart-main');
+            addBtn.textContent = 'Sold Out';
+            addBtn.disabled = true;
+            addBtn.style.background = '#ccc';
+            addBtn.style.cursor = 'not-allowed';
+
+            var mobileBtn = document.getElementById('mobile-add-to-cart');
+            if (mobileBtn) {
+              mobileBtn.textContent = 'Sold Out';
+              mobileBtn.disabled = true;
+              mobileBtn.style.background = '#ccc';
+            }
+
+            var buyBtn = document.getElementById('buy-now-btn');
+            if (buyBtn) buyBtn.style.display = 'none';
+            var mobileBuy = document.getElementById('mobile-buy-now');
+            if (mobileBuy) mobileBuy.style.display = 'none';
+
+            document.getElementById('quantity-row').style.display = 'none';
+          } else {
+            document.getElementById('quantity-row').style.display = 'flex';
+          }
 
           // ---- Stitching (Stitched / Unstitched) ----
           var selectedStitchingChoice = null; // {label, price}, or null if this product has no stitching options

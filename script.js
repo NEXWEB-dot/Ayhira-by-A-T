@@ -453,7 +453,13 @@
 
       productGrid.innerHTML = '';
       products.forEach((product) => {
-        const formattedPrice = product.price ? product.price.toLocaleString() : '0';
+        const hasDiscount = product.discountPercent && product.discountPercent > 0;
+        const currentPrice = hasDiscount 
+          ? Math.floor(product.price - (product.price * (product.discountPercent / 100))) 
+          : product.price;
+          
+        const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
+        const formattedOldPrice = product.price ? product.price.toLocaleString() : '0';
 
         const article = document.createElement('article');
         article.className = 'product-card';
@@ -461,22 +467,25 @@
 
         article.innerHTML = `
           <div class="product-card-image">
-            ${product.isNew ? '<span class="product-badge badge-new">New</span>' : ''}
-            ${product.isSale ? '<span class="product-badge badge-sale">Sale</span>' : ''}
+            ${product.isSoldOut ? `<span class="product-badge badge-soldout" style="position:absolute; top:10px; right:10px; background:#333; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; z-index:2; font-weight:bold;">Sold Out</span>` : ''}
+            ${hasDiscount && !product.isSoldOut ? `<span class="product-badge badge-sale">-${product.discountPercent}%</span>` : ''}
             <button class="wishlist-btn" id="wishlist-${product._id}" aria-label="Add to wishlist">
               <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </button>
-            <img src="${product.imageUrl || 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
+            <img src="${product.imageUrl ? product.imageUrl + '?w=800&q=80&fit=max&auto=format' : 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
             <div class="product-quick-actions">
               <button class="quick-action-btn" id="quick-view-${product._id}">Quick View</button>
-              <button class="quick-action-btn" id="add-cart-${product._id}">Add to Cart</button>
+              <button class="quick-action-btn" id="add-cart-${product._id}" ${product.isSoldOut ? 'disabled style="background:#ccc; cursor:not-allowed;"' : ''}>
+                ${product.isSoldOut ? 'Sold Out' : 'Add to Cart'}
+              </button>
             </div>
           </div>
           <div class="product-card-info">
             <p class="product-card-category">${product.category || 'Uncategorized'}</p>
             <h3 class="product-card-title">${product.name}</h3>
             <div class="product-card-price">
-              <span class="price-regular">Rs. ${formattedPrice}</span>
+              ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
+              <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
             </div>
           </div>
         `;
@@ -497,8 +506,33 @@
         });
 
         const cartBtn = article.querySelector('[id^="add-cart-"]');
-        cartBtn.addEventListener('click', function(e) {
+        if (!product.isSoldOut) {
+          cartBtn.addEventListener('click', function(e) {
           e.stopPropagation();
+          
+          // Actually add to localStorage cart
+          let cart = [];
+          try { cart = JSON.parse(localStorage.getItem('ayhira_cart') || '[]'); } catch(e) {}
+          
+          const hasDiscount = product.discountPercent && product.discountPercent > 0;
+          const currentPrice = hasDiscount ? Math.floor(product.price - (product.price * (product.discountPercent / 100))) : product.price;
+          
+          const existingIdx = cart.findIndex(item => item.id === product._id);
+          if (existingIdx > -1) {
+            cart[existingIdx].qty += 1;
+          } else {
+            cart.push({
+              id: product._id,
+              name: product.name,
+              price: currentPrice,
+              image: product.imageUrl,
+              qty: 1,
+              slug: product.slug
+            });
+          }
+          localStorage.setItem('ayhira_cart', JSON.stringify(cart));
+
+          // Update UI badge
           const cartCount = document.getElementById('cart-count');
           const currentCount = parseInt(cartCount.textContent, 10) || 0;
           cartCount.textContent = currentCount + 1;
@@ -520,6 +554,7 @@
             this.style.color = '';
           }, 1500);
         });
+        }
       });
 
       if ('IntersectionObserver' in window && typeof observer !== 'undefined') {
@@ -533,7 +568,7 @@
     // ===== FETCH FROM SANITY =====
     const PROJECT_ID = 'sc8k5yfq';
     const DATASET = 'production';
-    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url, "isSale": false, "isNew": false}');
+    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url}');
     const url = `https://${PROJECT_ID}.apicdn.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
 
     fetch(url)
@@ -569,19 +604,29 @@
 
     // Helper: create a product card article element for the homepage
     function createHomeProductCard(product) {
-      const formattedPrice = product.price ? product.price.toLocaleString() : '0';
+      const hasDiscount = product.discountPercent && product.discountPercent > 0;
+      const currentPrice = hasDiscount 
+        ? Math.floor(product.price - (product.price * (product.discountPercent / 100))) 
+        : product.price;
+        
+      const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
+      const formattedOldPrice = product.price ? product.price.toLocaleString() : '0';
+
       const article = document.createElement('article');
       article.className = 'product-card';
       article.id = `home-product-${product._id}`;
 
       article.innerHTML = `
         <div class="product-card-image">
+          ${product.isSoldOut ? `<span class="product-badge badge-soldout" style="position:absolute; top:10px; right:10px; background:#333; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; z-index:2; font-weight:bold;">Sold Out</span>` : ''}
+          ${hasDiscount && !product.isSoldOut ? `<span class="product-badge badge-sale" style="position:absolute; top:10px; left:10px; background:#e74c3c; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; z-index:2; font-weight:bold;">-${product.discountPercent}%</span>` : ''}
           <img src="${product.imageUrl ? product.imageUrl + '?w=800&q=80&fit=max&auto=format' : 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
         </div>
         <div class="product-card-info">
           <h3 class="product-card-title">${product.name}</h3>
           <div class="product-card-price">
-            <span class="price-regular">Rs. ${formattedPrice}</span>
+            ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
+            <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
           </div>
         </div>
       `;
