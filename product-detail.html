@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ayhira by A&T — Premium Product Details. Shop luxury embroidered suits and lawn collections.">
+  <meta name="theme-color" content="#2A231E">
+
+  <title>Product Detail - Ayhira by A&T</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Swiper CSS (loaded first so it's ready) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg">
+
+  <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    /* ===== PRODUCT DETAIL PAGE STYLES ===== */
+
+    /* ── Global container override for this page ── */
+    main.container {
+      padding-left: clamp(1rem, 4vw, 2rem);
+      padding-right: clamp(1rem, 4vw, 2rem);
+    }
+
+    /* ── Layout ── */
+    .product-detail-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 1.5rem;
+      margin-bottom: 6rem;
+    }
+
+    /* ── Gallery ── */
+    .product-gallery {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .swiper {
+      width: 100%;
+      aspect-ratio: 3/4;
+      max-height: 75vh;
+      background-color: var(--color-surface);
+      border-radius: 2px;
+    }
+
+    /* Fallback for browsers/webviews that don't support aspect-ratio —
+       without this, an unsupported browser has no width-driven height
+       rule to fall back on, and the skeleton's height:100% collapses
+       against whatever ancestor height happens to cascade down. */
+    @supports not (aspect-ratio: 1/1) {
+      .swiper {
+        height: 75vh;
+      }
+    }
+
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: var(--color-white);
+      background: rgba(42,35,30,0.5);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      transition: background 0.2s ease;
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+      background: rgba(42,35,30,0.85);
+    }
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+      font-size: 14px;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: var(--color-gold) !important;
+    }
+
+    /* Thumbnail strip */
+    .swiper-thumbs {
+      margin-top: 0.75rem;
+    }
+
+    .swiper-thumbs .swiper-slide {
+      aspect-ratio: 3/4;
+      cursor: pointer;
+      opacity: 0.55;
+      transition: opacity 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .swiper-thumbs .swiper-slide-thumb-active {
+      opacity: 1;
+      border-color: var(--color-gold);
+    }
+
+    /* ── Product Info ── */
+    .product-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-info .category {
+      font-family: var(--font-body);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.75rem;
+      color: var(--color-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .product-info h1 {
+      font-family: var(--font-heading);
+      font-size: 2.4rem;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+
+    .product-info .price {
+      font-family: var(--font-body);
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      color: var(--color-text);
+      font-weight: 500;
+    }
+
+    .product-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--color-gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .product-info .description {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: var(--color-text-light);
+      margin-bottom: 1.75rem;
+      white-space: pre-wrap;
+    }
+
+    .product-options {
+      margin-bottom: 1.25rem;
+    }
+
+    .product-options h4 {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--color-text-light);
+    }
+
+    /* ── Stitching ── */
+    .stitching-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .stitching-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.15rem;
+      padding: 0.6rem 1.1rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      font-family: var(--font-body);
+      cursor: pointer;
+      line-height: 1.3;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .stitching-chip .stitching-chip-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .stitching-chip .stitching-chip-price {
+      font-size: 0.76rem;
+      color: var(--color-text-light);
+    }
+
+    .stitching-chip:hover {
+      border-color: var(--color-espresso);
+    }
+
+    .stitching-chip.active {
+      background-color: var(--color-espresso);
+      border-color: var(--color-espresso);
+    }
+
+    .stitching-chip.active .stitching-chip-label {
+      color: var(--color-white);
+    }
+
+    .stitching-chip.active .stitching-chip-price {
+      color: var(--color-cream);
+    }
+
+    /* ── Colors ── */
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .color-chip {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .color-chip:hover {
+      border-color: var(--color-espresso);
+    }
+
+    .color-chip.active {
+      background-color: var(--color-espresso);
+      border-color: var(--color-espresso);
+      color: var(--color-white);
+    }
+
+    /* ── Quantity ── */
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .quantity-row label {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--color-text-light);
+      white-space: nowrap;
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--color-border);
+    }
+
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+      background: transparent;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--color-text);
+      transition: background 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-btn:hover {
+      background: var(--color-cream);
+    }
+
+    .qty-display {
+      width: 44px;
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      border: none;
+      border-left: 1px solid var(--color-border);
+      border-right: 1px solid var(--color-border);
+      height: 38px;
+      line-height: 38px;
+      color: var(--color-text);
+      background: transparent;
+      -moz-appearance: textfield;
+    }
+
+    .qty-display::-webkit-outer-spin-button,
+    .qty-display::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    /* ── CTA Buttons ── */
+    .add-to-cart-large {
+      padding: 1rem 2rem;
+      background-color: var(--color-espresso);
+      color: var(--color-white);
+      border: none;
+      font-family: var(--font-body);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      width: 100%;
+      margin-bottom: 0.75rem;
+    }
+
+    .add-to-cart-large:hover {
+      background-color: var(--color-gold);
+    }
+
+    .add-to-cart-large:active {
+      transform: scale(0.99);
+    }
+
+    .buy-now-btn {
+      padding: 1rem 2rem;
+      background-color: transparent;
+      color: var(--color-text);
+      border: 1px solid var(--color-text);
+      font-family: var(--font-body);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      text-align: center;
+      display: block;
+      text-decoration: none;
+      line-height: 1;
+      box-sizing: border-box;
+    }
+
+    .buy-now-btn:hover {
+      background-color: var(--color-espresso);
+      color: var(--color-white);
+      border-color: var(--color-espresso);
+    }
+
+    /* ── Product Meta ── */
+    .product-meta {
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .product-meta-item {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.55rem;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+    }
+
+    .product-meta-item span:first-child {
+      color: var(--color-text-light);
+      min-width: 80px;
+    }
+
+    .product-meta-item span:last-child {
+      color: var(--color-text);
+    }
+
+    /* ── Skeleton ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--color-cream) 25%, #f2ddd2 50%, var(--color-cream) 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 2px;
+    }
+
+    @keyframes skeleton-loading {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb {
+      padding: 1rem 0;
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      color: var(--color-text-light);
+      letter-spacing: 0.5px;
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb a {
+      color: var(--color-text-light);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb a:hover { color: var(--color-gold); }
+
+    .breadcrumb span { color: var(--color-border); }
+
+    /* ── Sticky Mobile Bar (hidden by default) ── */
+    .mobile-sticky-bar {
+      display: none;
+    }
+
+    /* Global guard: nothing on this page should be able to force
+       horizontal scroll on narrow viewports. */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: linear-gradient(to bottom, #ffffff 0%, #ffdfd3 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       RESPONSIVE BREAKPOINTS
+    ============================================================ */
+
+    /* ─ Tablet (≤ 900px) ─ */
+    @media (max-width: 900px) {
+      .product-detail-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      .product-gallery {
+        max-width: 520px;
+      }
+
+      .product-info h1 {
+        font-size: 2rem;
+      }
+
+      .product-info .price {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* ─ Mobile (≤ 768px) ─ */
+    @media (max-width: 768px) {
+      main.container {
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+      }
+
+      .breadcrumb {
+        padding: 0.6rem 0;
+        font-size: 0.7rem;
+        gap: 0.3rem;
+      }
+
+      .product-detail-container {
+        gap: 1.1rem;
+        margin-top: 0.5rem;
+        margin-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); /* space for sticky bar */
+      }
+
+      /* Full-bleed gallery — bleeds to screen edges */
+      .product-gallery {
+        max-width: 100%;
+        margin-left: -0.875rem;
+        margin-right: -0.875rem;
+        width: calc(100% + 1.75rem);
+      }
+
+      /* Swiper takes full portrait height, capped so it can never
+         dominate the viewport (e.g. while the skeleton is showing) */
+      .swiper {
+        aspect-ratio: 4/5;
+        max-height: 60vh;
+        border-radius: 0;
+      }
+
+      @supports not (aspect-ratio: 1/1) {
+        .swiper {
+          height: 60vh;
+        }
+      }
+
+      /* Smaller navigation arrows */
+      .swiper-button-next,
+      .swiper-button-prev {
+        width: 28px;
+        height: 28px;
+      }
+
+      .swiper-button-next::after,
+      .swiper-button-prev::after {
+        font-size: 10px;
+      }
+
+      /* Hide thumbnails — pagination dots take over */
+      .swiper-thumbs {
+        display: none;
+      }
+
+      /* ── Product info scaling ── */
+      .product-info .category {
+        font-size: 0.68rem;
+        letter-spacing: 1.5px;
+        margin-bottom: 0.35rem;
+      }
+
+      .product-info h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+      }
+
+      .product-info .price {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+      }
+
+      .product-divider {
+        margin-bottom: 0.75rem;
+        width: 32px;
+      }
+
+      .product-info .description {
+        font-size: 0.84rem;
+        line-height: 1.7;
+        margin-bottom: 1rem;
+      }
+
+      .product-options {
+        margin-bottom: 0.85rem;
+      }
+
+      .product-options h4 {
+        font-size: 0.7rem;
+        letter-spacing: 1.5px;
+        margin-bottom: 0.45rem;
+      }
+
+      .stitching-chip {
+        padding: 0.5rem 0.85rem;
+      }
+
+      .stitching-chip .stitching-chip-label {
+        font-size: 0.78rem;
+      }
+
+      .stitching-chip .stitching-chip-price {
+        font-size: 0.7rem;
+      }
+
+      /* ── Quantity row ── */
+      .quantity-row {
+        gap: 0.6rem;
+        margin-bottom: 0;
+      }
+
+      .quantity-row label {
+        font-size: 0.7rem;
+        letter-spacing: 1.5px;
+      }
+
+      .qty-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+      }
+
+      .qty-display {
+        width: 38px;
+        height: 34px;
+        line-height: 34px;
+        font-size: 0.88rem;
+      }
+
+      /* ── Hide desktop CTA — sticky bar replaces them ── */
+      .add-to-cart-large,
+      .buy-now-btn {
+        display: none !important;
+      }
+
+      /* ── Meta ── */
+      .product-meta {
+        margin-top: 1rem;
+        padding-top: 0.85rem;
+      }
+
+      .product-meta-item {
+        font-size: 0.78rem;
+        gap: 0.5rem;
+        margin-bottom: 0.45rem;
+        flex-wrap: wrap;
+      }
+
+      .product-meta-item span:first-child {
+        min-width: 70px;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    /* ─ Very small screens (≤ 380px) ─ */
+    @media (max-width: 380px) {
+      main.container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      .product-gallery {
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+        width: calc(100% + 1.5rem);
+      }
+
+      .product-info h1 {
+        font-size: 1.3rem;
+      }
+
+      .product-info .price {
+        font-size: 1rem;
+      }
+
+      .product-info .description {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* ── Sticky Mobile Bottom Bar ── */
+    @media (max-width: 768px) {
+      .mobile-sticky-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 900;
+        background: var(--color-white, #fff);
+        border-top: 1px solid var(--color-border, #ffd6cc);
+        padding: 0.65rem 0.875rem;
+        padding-bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
+        gap: 0.5rem;
+        box-shadow: 0 -6px 24px rgba(42,35,30,0.1);
+        align-items: stretch;
+      }
+
+      .mobile-sticky-bar .mobile-atc {
+        flex: 1.5;
+        min-width: 0;
+        white-space: nowrap;
+        padding: 0.85rem 0.5rem;
+        background-color: var(--color-espresso, #2a231e);
+        color: var(--color-white, #fff);
+        border: none;
+        font-family: var(--font-body, sans-serif);
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        font-size: 0.72rem;
+        cursor: pointer;
+        transition: background-color 0.25s ease;
+        border-radius: 1px;
+      }
+
+      .mobile-sticky-bar .mobile-atc:hover,
+      .mobile-sticky-bar .mobile-atc:active {
+        background: var(--gradient-peach, linear-gradient(135deg, #FFCFBE 0%, #E8927D 100%));
+      }
+
+      .mobile-sticky-bar .mobile-buy {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        padding: 0.85rem 0.5rem;
+        background-color: transparent;
+        color: var(--color-espresso, #2a231e);
+        border: 1px solid var(--color-espresso, #2a231e);
+        font-family: var(--font-body, sans-serif);
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        font-size: 0.72rem;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+        border-radius: 1px;
+      }
+
+      .mobile-sticky-bar .mobile-buy:hover,
+      .mobile-sticky-bar .mobile-buy:active {
+        background-color: var(--color-espresso, #2a231e);
+        color: #2A231E;
+      }
+    }
+
+    /* ===== SIZE GUIDE MODAL ===== */
+    .size-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .size-modal {
+      background: #fff;
+      padding: 2.5rem 2rem;
+      border-radius: 4px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .size-modal-close {
+      position: absolute;
+      top: 1rem; right: 1.5rem;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      background: none; border: none;
+      color: #333;
+    }
+    .size-table-wrapper {
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+    .size-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.85rem;
+      min-width: 500px;
+    }
+    .size-table th {
+      background: #000;
+      color: #fff;
+      padding: 1rem;
+      font-weight: 500;
+      border: 1px solid #333;
+    }
+    .size-table td {
+      padding: 1rem;
+      border: 1px solid #eee;
+      color: #333;
+    }
+    .size-guide-btn {
+      background: none;
+      border: none;
+      color: #E8927D;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+      font-family: inherit;
+      font-size: 0.8rem;
+      margin-left: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar" id="announcement-bar">
+    <span>Free Delivery on Orders Above Rs 10,000 &nbsp;✦&nbsp; Premium 3-Piece Embroidered Suits</span>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Logo -->
+      <div class="logo">
+        <a href="index.html" id="logo-link" class="logo-badge-link">
+          <img src="images/logo.jpg" alt="Ayhira by A&amp;T" class="logo-img">
+        </a>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="nav-main" id="nav-main" role="navigation" aria-label="Main navigation">
+        <a href="index.html" id="nav-home">Home</a>
+        <a href="shop.html" id="nav-shop">Shop</a>
+        <a href="#" id="nav-embroidered">Embroidered</a>
+        <a href="#" id="nav-contact">Contact</a>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button class="header-action-btn" id="search-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+        <button class="header-action-btn" id="account-btn" aria-label="Account">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </button>
+        <button class="header-action-btn" id="cart-btn" aria-label="Shopping bag" onclick="window.location.href='checkout.html'">
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span>/</span>
+      <a href="shop.html">Shop</a>
+      <span>/</span>
+      <span id="breadcrumb-product-name">Loading...</span>
+    </nav>
+
+    <!-- Product Detail Container -->
+    <div class="product-detail-container">
+      
+      <!-- Left: Gallery -->
+      <div class="product-gallery">
+        <!-- Main swiper -->
+        <div class="swiper mySwiper" id="mainSwiper">
+          <div class="swiper-wrapper" id="product-gallery-wrapper">
+            <!-- Skeleton Loader -->
+            <div class="swiper-slide skeleton" style="height: 100%;"></div>
+          </div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-pagination"></div>
+        </div>
+        <!-- Thumbnail swiper -->
+        <div class="swiper swiper-thumbs" id="thumbSwiper">
+          <div class="swiper-wrapper" id="product-thumbs-wrapper">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right: Info -->
+      <div class="product-info">
+        <p class="category" id="product-category"><span class="skeleton" style="display:inline-block; width:100px; height:1em;"></span></p>
+        <h1 id="product-title"><span class="skeleton" style="display:inline-block; width:80%; height:1.2em;"></span></h1>
+        <div class="price" id="product-price"><span class="skeleton" style="display:inline-block; width:80px; height:1em;"></span></div>
+        
+        <div class="product-divider"></div>
+
+        <div class="description" id="product-description">
+          <div class="skeleton" style="width:100%; height:1em; margin-bottom:0.5rem;"></div>
+          <div class="skeleton" style="width:90%; height:1em; margin-bottom:0.5rem;"></div>
+          <div class="skeleton" style="width:95%; height:1em;"></div>
+        </div>
+        
+        <!-- Stitching -->
+        <div class="product-options" id="stitching-options-container" style="display:none;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+            <h4 style="margin: 0;">Stitching</h4>
+            <button class="size-guide-btn" id="open-size-guide" aria-label="View Size Guide">View Size Chart</button>
+          </div>
+          <div class="stitching-options" id="stitching-options"></div>
+        </div>
+
+        <!-- Colors -->
+        <div class="product-options" id="product-colors-container" style="display:none;">
+          <h4>Color</h4>
+          <div class="color-options" id="product-colors"></div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="quantity-row" id="quantity-row" style="display:none;">
+          <label>Quantity</label>
+          <div class="qty-control">
+            <button class="qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
+            <input type="number" class="qty-display" id="qty-display" value="1" min="1" max="10" readonly>
+            <button class="qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+        
+        <button class="add-to-cart-large" id="add-to-cart-main">Add to Cart</button>
+        <a href="checkout.html" class="buy-now-btn" id="buy-now-btn">Buy Now</a>
+
+        <!-- Meta -->
+        <div class="product-meta" id="product-meta" style="display:none;">
+          <div class="product-meta-item">
+            <span>Category</span>
+            <span id="meta-category">—</span>
+          </div>
+          <div class="product-meta-item">
+            <span>Delivery</span>
+            <span>Rs. 250 Flat Rate</span>
+          </div>
+          <div class="product-meta-item">
+            <span>Return</span>
+            <span>Easy exchange within 7 days</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="images/logo.jpg" alt="Ayhira by A&amp;T" class="footer-logo-img">
+        <p>Where Elegance Meets Tradition.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/ayhiraclothing?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram" id="social-instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          </a>
+          <a href="https://wa.me/923038126571" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" id="social-whatsapp">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="shop.html">New Arrivals</a></li>
+          <li><a href="shop.html">Embroidered</a></li>
+          <li><a href="shop.html">3-Piece Suits</a></li>
+          <li><a href="shop.html">Lawn Collection</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Information</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#" id="footer-size-guide">Size Guide</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Stay Connected</h4>
+        <div class="footer-newsletter">
+          <p>Subscribe to receive updates and exclusive offers.</p>
+          <form class="newsletter-form" id="newsletter-form">
+            <input type="email" class="newsletter-input" id="newsletter-email" placeholder="Your email address" required>
+            <button type="submit" class="newsletter-btn" id="newsletter-submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Ayhira by A&amp;T. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/923038126571" class="whatsapp-float" target="_blank" rel="noopener noreferrer" id="whatsapp-float" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+  </a>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Mobile Sticky Bottom Bar (shown only on ≤576px) -->
+  <div class="mobile-sticky-bar" id="mobile-sticky-bar" aria-hidden="true">
+    <button class="mobile-atc" id="mobile-add-to-cart" aria-label="Add to cart">Add to Cart</button>
+    <a href="checkout.html" class="mobile-buy" id="mobile-buy-now" aria-label="Buy now">Buy Now</a>
+  </div>
+
+  <!-- Size Guide Modal -->
+  <div class="size-modal-overlay" id="size-modal-overlay">
+    <div class="size-modal">
+      <button class="size-modal-close" id="close-size-guide">&times;</button>
+      <h2 style="margin-bottom:1.5rem; font-family:'Georgia',serif;">Size Guide</h2>
+      
+      <div class="size-table-wrapper">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>Shirt Size</th>
+              <th>Extra Small</th>
+              <th>Small</th>
+              <th>Medium</th>
+              <th>Large</th>
+              <th>Extra Large</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Length</td><td>46</td><td>47</td><td>47</td><td>47</td><td>47</td></tr>
+            <tr><td>Shoulder</td><td>13.5</td><td>14</td><td>14.5</td><td>15</td><td>16</td></tr>
+            <tr><td>Chest</td><td>17.5</td><td>19</td><td>20</td><td>22</td><td>24</td></tr>
+            <tr><td>Sleeve Length</td><td>22</td><td>22</td><td>23</td><td>24</td><td>24</td></tr>
+            <tr><td>Sleeve Opening</td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="size-table-wrapper">
+        <table class="size-table">
+          <thead>
+            <tr>
+              <th>Trouser Size</th>
+              <th>Extra Small</th>
+              <th>Small</th>
+              <th>Medium</th>
+              <th>Large</th>
+              <th>Extra Large</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Length</td><td>36</td><td>37</td><td>38</td><td>39</td><td>39</td></tr>
+            <tr><td>Bottom</td><td>24</td><td>24</td><td>24</td><td>24</td><td>24</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="text-align:center; font-size:0.8rem; color:#666; margin-top:1rem;">Measurements are in inches.</p>
+    </div>
+  </div>
+
+  <!-- Swiper JS (must be before inline script) -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Main site JS -->
+  <script src="script.js"></script>
+  
+  <!-- Product Detail Logic -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ===== CART UTILITIES =====
+      function getCart() {
+        try { return JSON.parse(localStorage.getItem('ayhira_cart') || '[]'); } catch(e) { return []; }
+      }
+
+      function saveCart(cart) {
+        localStorage.setItem('ayhira_cart', JSON.stringify(cart));
+      }
+
+      function getCartCount() {
+        return getCart().reduce(function(sum, item) { return sum + item.qty; }, 0);
+      }
+
+      function updateCartBadge() {
+        var badge = document.getElementById('cart-count');
+        if (badge) badge.textContent = getCartCount();
+      }
+
+      // Init badge from localStorage
+      updateCartBadge();
+
+      // ===== QUANTITY CONTROL =====
+      var qty = 1;
+      var qtyDisplay = document.getElementById('qty-display');
+      
+      document.getElementById('qty-minus').addEventListener('click', function () {
+        if (qty > 1) { qty--; qtyDisplay.value = qty; }
+      });
+
+      document.getElementById('qty-plus').addEventListener('click', function () {
+        if (qty < 10) { qty++; qtyDisplay.value = qty; }
+      });
+
+      // ===== FETCH PRODUCT FROM SANITY =====
+      var swiper, thumbSwiper;
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var productSlug = urlParams.get('product');
+
+      // Clears every skeleton placeholder (breadcrumb, meta, price, gallery)
+      // so a "nothing to show" state never leaves stray skeletons on screen.
+      function resetToEmptyState(titleText, descText) {
+        document.getElementById('breadcrumb-product-name').textContent = titleText;
+        document.getElementById('product-title').textContent = titleText;
+        document.getElementById('product-description').textContent = descText;
+        document.getElementById('product-category').textContent = '';
+        document.getElementById('product-price').textContent = '';
+
+        var galleryWrapper = document.getElementById('product-gallery-wrapper');
+        galleryWrapper.innerHTML = '<div class="swiper-slide"><img src="https://via.placeholder.com/600x800?text=No+Image" alt="No product image" loading="lazy"></div>';
+        var thumbSwiperEl = document.getElementById('thumbSwiper');
+        if (thumbSwiperEl) thumbSwiperEl.style.display = 'none';
+        new Swiper('#mainSwiper', { grabCursor: true });
+      }
+
+      if (!productSlug) {
+        resetToEmptyState('Product Not Found', 'Please return to the shop and select a valid product.');
+        return;
+      }
+
+      var PROJECT_ID = 'sc8k5yfq';
+      var DATASET = 'production';
+      var query = encodeURIComponent(
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
+      );
+      var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
+
+      // Guard against a hung request leaving the skeleton (and the
+      // tall gallery placeholder) on screen forever with no feedback.
+      var fetchController = new AbortController();
+      var fetchTimedOut = false;
+      var fetchTimeoutId = setTimeout(function () {
+        fetchTimedOut = true;
+        fetchController.abort();
+      }, 12000);
+
+      fetch(apiUrl, { signal: fetchController.signal })
+        .then(function (res) {
+          clearTimeout(fetchTimeoutId);
+          return res.json();
+        })
+        .then(function (data) {
+          var product = data.result;
+
+          if (!product) {
+            resetToEmptyState('Product Not Found', 'No product found with this slug. Please go back to the shop.');
+            return;
+          }
+
+          function renderPrice(amount) {
+            var priceEl = document.getElementById('product-price');
+            var hasDiscount = product.discountPercent && product.discountPercent > 0;
+            
+            if (hasDiscount) {
+              // amount is the actual final selling price (the real price from sanity)
+              // oldPrice is inflated to create the illusion of a discount
+              var oldPrice = Math.floor(amount / (1 - (product.discountPercent / 100)));
+              priceEl.innerHTML = '<span style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ' + oldPrice.toLocaleString() + '</span>' + 
+                                  '<span style="color: #e74c3c;">Rs. ' + amount.toLocaleString() + '</span>' +
+                                  '<span class="product-badge badge-sale" style="display:inline-block; position:relative; background:#e74c3c; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; margin-left:1rem; transform:translateY(-2px);">-' + product.discountPercent + '%</span>';
+            } else {
+              priceEl.textContent = 'Rs. ' + (amount ? amount.toLocaleString() : '0');
+            }
+          }
+
+          // ---- Populate Meta ----
+          var catLabel = product.category
+            ? product.category.replace(/-/g, ' ').toUpperCase()
+            : 'UNCATEGORIZED';
+
+          document.title = product.name + ' — Ayhira by A&T';
+          document.getElementById('breadcrumb-product-name').textContent = product.name;
+          document.getElementById('product-title').textContent = product.name;
+          document.getElementById('product-category').textContent = catLabel;
+          renderPrice(product.price);
+          document.getElementById('product-description').textContent = product.description || 'Premium quality garment crafted with care and attention to detail.';
+
+          // Product meta panel
+          document.getElementById('meta-category').textContent = catLabel;
+          document.getElementById('product-meta').style.display = 'block';
+
+          // Show quantity row and logic if not sold out
+          if (product.isSoldOut) {
+            var addBtn = document.getElementById('add-to-cart-main');
+            addBtn.textContent = 'Sold Out';
+            addBtn.disabled = true;
+            addBtn.style.background = '#ccc';
+            addBtn.style.cursor = 'not-allowed';
+
+            var mobileBtn = document.getElementById('mobile-add-to-cart');
+            if (mobileBtn) {
+              mobileBtn.textContent = 'Sold Out';
+              mobileBtn.disabled = true;
+              mobileBtn.style.background = '#ccc';
+            }
+
+            var buyBtn = document.getElementById('buy-now-btn');
+            if (buyBtn) buyBtn.style.display = 'none';
+            var mobileBuy = document.getElementById('mobile-buy-now');
+            if (mobileBuy) mobileBuy.style.display = 'none';
+
+            document.getElementById('quantity-row').style.display = 'none';
+          } else {
+            document.getElementById('quantity-row').style.display = 'flex';
+          }
+
+          // ---- Stitching (Stitched / Unstitched) ----
+          var selectedStitchingChoice = null; // {label, price}, or null if this product has no stitching options
+          var stitching = product.stitching || {};
+          var stitchingChoices = [];
+          if (stitching.unstitchedPrice) {
+            stitchingChoices.push({ label: 'Unstitched', price: stitching.unstitchedPrice });
+          }
+          if (stitching.stitchedPrice) {
+            stitchingChoices.push({ label: 'Stitched', price: stitching.stitchedPrice });
+          }
+
+          if (stitchingChoices.length > 0) {
+            var stitchingContainer = document.getElementById('stitching-options-container');
+            var stitchingDiv = document.getElementById('stitching-options');
+            stitchingContainer.style.display = 'block';
+
+            stitchingChoices.forEach(function (choice, index) {
+              var chip = document.createElement('button');
+              chip.type = 'button';
+              chip.className = 'stitching-chip' + (index === 0 ? ' active' : '');
+              chip.innerHTML =
+                '<span class="stitching-chip-label">' + choice.label + '</span>' +
+                '<span class="stitching-chip-price">Rs. ' + choice.price.toLocaleString() + '</span>';
+              chip.addEventListener('click', function () {
+                document.querySelectorAll('.stitching-chip').forEach(function (c) { c.classList.remove('active'); });
+                chip.classList.add('active');
+                selectedStitchingChoice = choice;
+                renderPrice(choice.price);
+              });
+              stitchingDiv.appendChild(chip);
+            });
+
+            // Default to the first available choice
+            selectedStitchingChoice = stitchingChoices[0];
+            renderPrice(stitchingChoices[0].price);
+          }
+
+          // ---- Colors ----
+          if (product.colors && product.colors.length > 0) {
+            var colorsContainer = document.getElementById('product-colors-container');
+            var colorsDiv = document.getElementById('product-colors');
+            colorsContainer.style.display = 'block';
+            product.colors.forEach(function (color, index) {
+              var btn = document.createElement('button');
+              btn.className = 'color-chip' + (index === 0 ? ' active' : '');
+              btn.textContent = color;
+              btn.addEventListener('click', function () {
+                document.querySelectorAll('.color-chip').forEach(function (c) { c.classList.remove('active'); });
+                this.classList.add('active');
+              });
+              colorsDiv.appendChild(btn);
+            });
+          }
+
+          // ---- Gallery ----
+          var galleryWrapper = document.getElementById('product-gallery-wrapper');
+          var thumbsWrapper = document.getElementById('product-thumbs-wrapper');
+          galleryWrapper.innerHTML = '';
+          thumbsWrapper.innerHTML = '';
+
+          var images = (product.galleryUrls && product.galleryUrls.length > 0)
+            ? product.galleryUrls
+            : ['https://via.placeholder.com/600x800?text=No+Image'];
+
+          images.forEach(function (imgUrl) {
+            // Main slide (high res)
+            var mainImgUrl = imgUrl.indexOf('placeholder') === -1 ? imgUrl + '?w=1200&q=80&fit=max&auto=format' : imgUrl;
+            var slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            slide.innerHTML = '<img src="' + mainImgUrl + '" alt="' + product.name + '" loading="lazy">';
+            galleryWrapper.appendChild(slide);
+
+            // Thumb slide (low res)
+            var thumbImgUrl = imgUrl.indexOf('placeholder') === -1 ? imgUrl + '?w=300&q=80&fit=max&auto=format' : imgUrl;
+            var thumb = document.createElement('div');
+            thumb.className = 'swiper-slide';
+            thumb.innerHTML = '<img src="' + thumbImgUrl + '" alt="thumbnail" loading="lazy">';
+            thumbsWrapper.appendChild(thumb);
+          });
+
+          // ---- Init Swiper ----
+          if (images.length > 1) {
+            thumbSwiper = new Swiper('#thumbSwiper', {
+              spaceBetween: 8,
+              slidesPerView: 4,
+              freeMode: true,
+              watchSlidesProgress: true,
+            });
+
+            swiper = new Swiper('#mainSwiper', {
+              navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+              },
+              pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+              },
+              thumbs: { swiper: thumbSwiper },
+              loop: true,
+              grabCursor: true,
+            });
+          } else {
+            // Hide thumb strip for single image
+            document.getElementById('thumbSwiper').style.display = 'none';
+            swiper = new Swiper('#mainSwiper', {
+              grabCursor: true,
+            });
+          }
+
+          // ---- Add to Cart ----
+          document.getElementById('add-to-cart-main').addEventListener('click', function () {
+            var selectedColor = '';
+            var activeChip = document.querySelector('.color-chip.active');
+            if (activeChip) selectedColor = activeChip.textContent;
+
+            var basePrice = selectedStitchingChoice ? selectedStitchingChoice.price : product.price;
+            var cartPrice = basePrice;
+            var stitchingLabel = selectedStitchingChoice ? selectedStitchingChoice.label : '';
+
+            var cart = getCart();
+            var existingIdx = cart.findIndex(function (item) {
+              return item.id === product._id && item.color === selectedColor && item.stitching === stitchingLabel;
+            });
+
+            if (existingIdx > -1) {
+              cart[existingIdx].qty += qty;
+            } else {
+              cart.push({
+                id: product._id || productSlug,
+                slug: productSlug,
+                name: product.name,
+                price: cartPrice,
+                image: images[0],
+                color: selectedColor,
+                stitching: stitchingLabel,
+                qty: qty,
+              });
+            }
+
+            saveCart(cart);
+            updateCartBadge();
+
+            var btn = this;
+            btn.textContent = 'Added to Cart ✓';
+            btn.style.backgroundColor = 'var(--color-gold)';
+            setTimeout(function () {
+              btn.textContent = 'Add to Cart';
+              btn.style.backgroundColor = '';
+            }, 2000);
+
+            // Animate badge
+            var badge = document.getElementById('cart-count');
+            if (badge) {
+              badge.style.transform = 'scale(1.5)';
+              setTimeout(function () {
+                badge.style.transform = 'scale(1)';
+                badge.style.transition = 'transform 0.3s ease';
+              }, 200);
+            }
+          });
+
+          // ---- Buy Now ----
+          document.getElementById('buy-now-btn').addEventListener('click', function (e) {
+            e.preventDefault();
+            // Add to cart first, then redirect
+            document.getElementById('add-to-cart-main').click();
+            setTimeout(function () { window.location.href = 'checkout.html'; }, 300);
+          });
+
+          // ---- Mobile Sticky Bar ----
+          var mobileBar = document.getElementById('mobile-sticky-bar');
+          if (mobileBar) {
+            mobileBar.removeAttribute('aria-hidden');
+
+            document.getElementById('mobile-add-to-cart').addEventListener('click', function () {
+              // Reuse the desktop handler
+              document.getElementById('add-to-cart-main').click();
+              var mBtn = this;
+              mBtn.textContent = 'Added ✓';
+              mBtn.style.backgroundColor = 'var(--color-gold)';
+              setTimeout(function () {
+                mBtn.textContent = 'Add to Cart';
+                mBtn.style.backgroundColor = '';
+              }, 2000);
+            });
+
+            document.getElementById('mobile-buy-now').addEventListener('click', function (e) {
+              e.preventDefault();
+              document.getElementById('add-to-cart-main').click();
+              setTimeout(function () { window.location.href = 'checkout.html'; }, 300);
+            });
+          }
+        })
+        .catch(function (err) {
+          clearTimeout(fetchTimeoutId);
+          console.error('Error fetching product detail:', err);
+
+          var title = document.getElementById('product-title');
+          var desc = document.getElementById('product-description');
+          title.innerHTML = 'Unable to Load Product';
+          desc.innerHTML = fetchTimedOut
+            ? 'This is taking longer than expected. Please check your connection and <a href="javascript:location.reload()">try again</a>.'
+            : 'Something went wrong loading this product. Please <a href="javascript:location.reload()">try again</a>.';
+          document.getElementById('product-category').textContent = '';
+          document.getElementById('product-price').textContent = '';
+
+          var galleryWrapper = document.getElementById('product-gallery-wrapper');
+          galleryWrapper.innerHTML = '<div class="swiper-slide"><img src="https://via.placeholder.com/600x800?text=Unavailable" alt="Product image unavailable" loading="lazy"></div>';
+          document.getElementById('thumbSwiper').style.display = 'none';
+          new Swiper('#mainSwiper', { grabCursor: true });
+        });
+    })();
+
+    // ===== SIZE GUIDE MODAL LOGIC =====
+    document.addEventListener('DOMContentLoaded', function () {
+      var sizeModalOverlay = document.getElementById('size-modal-overlay');
+      var openSizeGuideBtn = document.getElementById('open-size-guide');
+      var closeSizeGuideBtn = document.getElementById('close-size-guide');
+      var footerSizeGuide = document.getElementById('footer-size-guide');
+
+      function openSizeModal(e) {
+        if (e) e.preventDefault();
+        if (sizeModalOverlay) sizeModalOverlay.style.display = 'flex';
+      }
+
+      if (openSizeGuideBtn) openSizeGuideBtn.addEventListener('click', openSizeModal);
+      if (footerSizeGuide) footerSizeGuide.addEventListener('click', openSizeModal);
+      if (closeSizeGuideBtn) {
+        closeSizeGuideBtn.addEventListener('click', function () {
+          sizeModalOverlay.style.display = 'none';
+        });
+      }
+      if (sizeModalOverlay) {
+        sizeModalOverlay.addEventListener('click', function (e) {
+          if (e.target === sizeModalOverlay) sizeModalOverlay.style.display = 'none';
+        });
+      }
+    });
+  </script>
+</body>
+</html>
