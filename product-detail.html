@@ -231,6 +231,34 @@
       color: var(--color-cream);
     }
 
+    /* ── Colors ── */
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .color-chip {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .color-chip:hover {
+      border-color: var(--color-espresso);
+    }
+
+    .color-chip.active {
+      background-color: var(--color-espresso);
+      border-color: var(--color-espresso);
+      color: var(--color-white);
+    }
+
     /* ── Quantity ── */
     .quantity-row {
       display: flex;
@@ -883,6 +911,12 @@
           <div class="stitching-options" id="stitching-options"></div>
         </div>
 
+        <!-- Colors -->
+        <div class="product-options" id="product-colors-container" style="display:none;">
+          <h4>Color</h4>
+          <div class="color-options" id="product-colors"></div>
+        </div>
+
         <!-- Quantity -->
         <div class="quantity-row" id="quantity-row" style="display:none;">
           <label>Quantity</label>
@@ -1085,9 +1119,24 @@
       var urlParams = new URLSearchParams(window.location.search);
       var productSlug = urlParams.get('product');
 
+      // Clears every skeleton placeholder (breadcrumb, meta, price, gallery)
+      // so a "nothing to show" state never leaves stray skeletons on screen.
+      function resetToEmptyState(titleText, descText) {
+        document.getElementById('breadcrumb-product-name').textContent = titleText;
+        document.getElementById('product-title').textContent = titleText;
+        document.getElementById('product-description').textContent = descText;
+        document.getElementById('product-category').textContent = '';
+        document.getElementById('product-price').textContent = '';
+
+        var galleryWrapper = document.getElementById('product-gallery-wrapper');
+        galleryWrapper.innerHTML = '<div class="swiper-slide"><img src="https://via.placeholder.com/600x800?text=No+Image" alt="No product image" loading="lazy"></div>';
+        var thumbSwiperEl = document.getElementById('thumbSwiper');
+        if (thumbSwiperEl) thumbSwiperEl.style.display = 'none';
+        new Swiper('#mainSwiper', { grabCursor: true });
+      }
+
       if (!productSlug) {
-        document.getElementById('product-title').textContent = 'Product Not Found';
-        document.getElementById('product-description').textContent = 'Please return to the shop and select a valid product.';
+        resetToEmptyState('Product Not Found', 'Please return to the shop and select a valid product.');
         return;
       }
 
@@ -1116,8 +1165,7 @@
           var product = data.result;
 
           if (!product) {
-            document.getElementById('product-title').textContent = 'Product Not Found';
-            document.getElementById('product-description').textContent = 'No product found with this slug. Please go back to the shop.';
+            resetToEmptyState('Product Not Found', 'No product found with this slug. Please go back to the shop.');
             return;
           }
 
