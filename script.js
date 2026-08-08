@@ -453,13 +453,15 @@
 
       productGrid.innerHTML = '';
       products.forEach((product) => {
+        const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
+        const prefix = (product.stitching && product.stitching.unstitchedPrice) ? 'Unstitched - ' : '';
         const hasDiscount = product.discountPercent && product.discountPercent > 0;
         const currentPrice = hasDiscount 
-          ? Math.floor(product.price - (product.price * (product.discountPercent / 100))) 
-          : product.price;
+          ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
+          : basePrice;
           
         const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
-        const formattedOldPrice = product.price ? product.price.toLocaleString() : '0';
+        const formattedOldPrice = basePrice ? basePrice.toLocaleString() : '0';
 
         const article = document.createElement('article');
         article.className = 'product-card';
@@ -485,7 +487,7 @@
             <h3 class="product-card-title">${product.name}</h3>
             <div class="product-card-price">
               ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
-              <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
+              <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>${prefix}Rs. ${formattedPrice}</span>
             </div>
           </div>
         `;
@@ -514,8 +516,9 @@
           let cart = [];
           try { cart = JSON.parse(localStorage.getItem('ayhira_cart') || '[]'); } catch(e) {}
           
+          const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
           const hasDiscount = product.discountPercent && product.discountPercent > 0;
-          const currentPrice = hasDiscount ? Math.floor(product.price - (product.price * (product.discountPercent / 100))) : product.price;
+          const currentPrice = hasDiscount ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) : basePrice;
           
           const existingIdx = cart.findIndex(item => item.id === product._id);
           if (existingIdx > -1) {
@@ -568,7 +571,7 @@
     // ===== FETCH FROM SANITY =====
     const PROJECT_ID = 'sc8k5yfq';
     const DATASET = 'production';
-    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url}');
+    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url}');
     const url = `https://${PROJECT_ID}.apicdn.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
 
     fetch(url)
@@ -604,13 +607,15 @@
 
     // Helper: create a product card article element for the homepage
     function createHomeProductCard(product) {
+      const basePrice = (product.stitching && product.stitching.unstitchedPrice) ? product.stitching.unstitchedPrice : product.price;
+      const prefix = (product.stitching && product.stitching.unstitchedPrice) ? 'Unstitched - ' : '';
       const hasDiscount = product.discountPercent && product.discountPercent > 0;
       const currentPrice = hasDiscount 
-        ? Math.floor(product.price - (product.price * (product.discountPercent / 100))) 
-        : product.price;
+        ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
+        : basePrice;
         
       const formattedPrice = currentPrice ? currentPrice.toLocaleString() : '0';
-      const formattedOldPrice = product.price ? product.price.toLocaleString() : '0';
+      const formattedOldPrice = basePrice ? basePrice.toLocaleString() : '0';
 
       const article = document.createElement('article');
       article.className = 'product-card';
@@ -626,7 +631,7 @@
           <h3 class="product-card-title">${product.name}</h3>
           <div class="product-card-price">
             ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
-            <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
+            <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>${prefix}Rs. ${formattedPrice}</span>
           </div>
         </div>
       `;
