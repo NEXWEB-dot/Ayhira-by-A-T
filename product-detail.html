@@ -1434,44 +1434,38 @@
           document.getElementById('product-category').textContent = '';
           document.getElementById('product-price').textContent = '';
 
-          // Take the gallery out of its (otherwise endless) skeleton
-          // animation instead of leaving a full-height placeholder block.
           var galleryWrapper = document.getElementById('product-gallery-wrapper');
           galleryWrapper.innerHTML = '<div class="swiper-slide"><img src="https://via.placeholder.com/600x800?text=Unavailable" alt="Product image unavailable" loading="lazy"></div>';
           document.getElementById('thumbSwiper').style.display = 'none';
           new Swiper('#mainSwiper', { grabCursor: true });
         });
-    });
+    })();
 
     // ===== SIZE GUIDE MODAL LOGIC =====
-    var sizeModalOverlay = document.getElementById('size-modal-overlay');
-    var openSizeGuideBtn = document.getElementById('open-size-guide');
-    var closeSizeGuideBtn = document.getElementById('close-size-guide');
-    var footerSizeGuide = document.getElementById('footer-size-guide');
-    
-    function openSizeModal(e) {
-      if(e) e.preventDefault();
-      sizeModalOverlay.style.display = 'flex';
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+      var sizeModalOverlay = document.getElementById('size-modal-overlay');
+      var openSizeGuideBtn = document.getElementById('open-size-guide');
+      var closeSizeGuideBtn = document.getElementById('close-size-guide');
+      var footerSizeGuide = document.getElementById('footer-size-guide');
 
-    if(openSizeGuideBtn) {
-      openSizeGuideBtn.addEventListener('click', openSizeModal);
-    }
-    if(footerSizeGuide) {
-      footerSizeGuide.addEventListener('click', openSizeModal);
-    }
-    if(closeSizeGuideBtn) {
-      closeSizeGuideBtn.addEventListener('click', function() {
-        sizeModalOverlay.style.display = 'none';
-      });
-    }
-    if(sizeModalOverlay) {
-      sizeModalOverlay.addEventListener('click', function(e) {
-        if(e.target === sizeModalOverlay) {
+      function openSizeModal(e) {
+        if (e) e.preventDefault();
+        if (sizeModalOverlay) sizeModalOverlay.style.display = 'flex';
+      }
+
+      if (openSizeGuideBtn) openSizeGuideBtn.addEventListener('click', openSizeModal);
+      if (footerSizeGuide) footerSizeGuide.addEventListener('click', openSizeModal);
+      if (closeSizeGuideBtn) {
+        closeSizeGuideBtn.addEventListener('click', function () {
           sizeModalOverlay.style.display = 'none';
-        }
-      });
-    }
+        });
+      }
+      if (sizeModalOverlay) {
+        sizeModalOverlay.addEventListener('click', function (e) {
+          if (e.target === sizeModalOverlay) sizeModalOverlay.style.display = 'none';
+        });
+      }
+    });
   </script>
 </body>
 </html>
