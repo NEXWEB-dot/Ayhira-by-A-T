@@ -413,6 +413,13 @@
       overflow-x: hidden;
     }
 
+    body {
+      background: linear-gradient(to bottom, #ffffff 0%, #ffdfd3 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
     /* ============================================================
        RESPONSIVE BREAKPOINTS
     ============================================================ */
@@ -1087,7 +1094,7 @@
       var PROJECT_ID = 'sc8k5yfq';
       var DATASET = 'production';
       var query = encodeURIComponent(
-        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, category, description, colors, stitching, "galleryUrls": gallery[].asset->url }'
       );
       var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
@@ -1115,7 +1122,17 @@
           }
 
           function renderPrice(amount) {
-            document.getElementById('product-price').textContent = 'Rs. ' + (amount ? amount.toLocaleString() : '0');
+            var priceEl = document.getElementById('product-price');
+            var hasDiscount = product.discountPercent && product.discountPercent > 0;
+            
+            if (hasDiscount) {
+              var discountedPrice = Math.floor(amount - (amount * (product.discountPercent / 100)));
+              priceEl.innerHTML = '<span style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ' + amount.toLocaleString() + '</span>' + 
+                                  '<span style="color: #e74c3c;">Rs. ' + discountedPrice.toLocaleString() + '</span>' +
+                                  '<span class="product-badge badge-sale" style="display:inline-block; position:relative; background:#e74c3c; color:#fff; padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:bold; margin-left:1rem; transform:translateY(-2px);">-' + product.discountPercent + '%</span>';
+            } else {
+              priceEl.textContent = 'Rs. ' + (amount ? amount.toLocaleString() : '0');
+            }
           }
 
           // ---- Populate Meta ----
@@ -1253,7 +1270,11 @@
             var activeChip = document.querySelector('.color-chip.active');
             if (activeChip) selectedColor = activeChip.textContent;
 
-            var cartPrice = selectedStitchingChoice ? selectedStitchingChoice.price : product.price;
+            var basePrice = selectedStitchingChoice ? selectedStitchingChoice.price : product.price;
+            var hasDiscount = product.discountPercent && product.discountPercent > 0;
+            var cartPrice = hasDiscount 
+              ? Math.floor(basePrice - (basePrice * (product.discountPercent / 100))) 
+              : basePrice;
             var stitchingLabel = selectedStitchingChoice ? selectedStitchingChoice.label : '';
 
             var cart = getCart();
