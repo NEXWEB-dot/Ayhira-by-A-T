@@ -409,9 +409,9 @@
         // No checkbox checked — if URL has a category, filter by it; else show all
         if (urlCat) {
           const urlCatMap = {
-            'luxury-formals': 'luxury-formals',
-            'embroidered': 'embroidered',
-            'solids': 'solids',
+            'luxury-formals': 'lawn',           // Luxury Formals = foil embroidered (lawn) in Sanity
+            'embroidered': 'embroidery-3-piece-suits', // 3 Pcs Embroidery Suits in Sanity
+            'solids': 'solids',                 // 2 Pcs Solids
             'embroidery-3-piece-suits': 'embroidery-3-piece-suits'
           };
           const sanityCategory = urlCatMap[urlCat];
