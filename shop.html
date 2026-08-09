@@ -46,17 +46,15 @@
       <!-- Logo -->
       <div class="logo">
         <a href="index.html" id="logo-link">
-          <img src="images/logo.png" alt="Ayhira by A&amp;T" class="logo-img">
-          <span class="logo-text">
-            <span class="logo-main">Ayhira</span>
-            <span class="logo-sub">by A&amp;T</span>
-          </span>
+          <span class="logo-main">AYHIRA</span>
+          <span class="logo-sub">by A&amp;T</span>
         </a>
       </div>
 
       <!-- Navigation -->
       <nav class="nav-main" id="nav-main" role="navigation" aria-label="Main navigation">
         <a href="#" class="active" id="nav-new-in">New In</a>
+        <a href="shop.html?category=embroidered" id="nav-embroidered">Embroidered</a>
 
         <div class="nav-dropdown" id="nav-collections-dropdown">
           <a href="#" class="nav-dropdown-toggle" id="nav-collections">
@@ -64,12 +62,17 @@
             <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
           </a>
           <div class="nav-dropdown-menu">
-            <a href="shop.html?category=embroidery-3-piece-suits" id="nav-collection-3-piece">3 Piece Embroidery</a>
+            <a href="#" id="nav-summer-lawn">Summer Lawn</a>
+            <a href="#" id="nav-luxury-formals">Luxury Formals</a>
+            <a href="#" id="nav-evening-wear">Evening Wear</a>
+            <a href="#" id="nav-eid-collection">Eid Collection</a>
+            <a href="shop.html?category=embroidered" id="nav-collection-embroidered">Embroidered</a>
+            <a href="shop.html?category=embroidery-3-piece-suits" id="nav-collection-3-piece">3 Piece</a>
             <a href="shop.html?category=lawn" id="nav-collection-foil-embroidered">Foil Embroidered</a>
           </div>
         </div>
 
-        <a href="shop.html?category=embroidery-3-piece-suits" id="nav-embroidery-3-piece">3 Piece Embroidery</a>
+        <a href="shop.html?category=embroidery-3-piece-suits" id="nav-embroidery-3-piece">3 Piece</a>
 
 
         <a href="#" id="nav-contact">Contact</a>
@@ -139,6 +142,10 @@
           </div>
           <div class="sidebar-content">
             <div class="filter-option">
+              <input type="checkbox" id="cat-embroidered">
+              <label for="cat-embroidered">Embroidered <span class="count">(5)</span></label>
+            </div>
+            <div class="filter-option">
               <input type="checkbox" id="cat-printed">
               <label for="cat-printed">Solids <span class="count">(2)</span></label>
             </div>
@@ -148,7 +155,7 @@
             </div>
             <div class="filter-option">
               <input type="checkbox" id="cat-embroidery-3-piece">
-              <label for="cat-embroidery-3-piece">3 Piece Embroidery <span class="count">(0)</span></label>
+              <label for="cat-embroidery-3-piece">3 Piece Suits <span class="count">(0)</span></label>
             </div>
           </div>
         </div>
@@ -204,7 +211,7 @@
     <div class="footer-grid">
       <!-- Brand Column -->
       <div class="footer-brand">
-        <div class="footer-logo">Ayhira</div>
+        <div class="footer-logo">AYHIRA</div>
         <div class="footer-tagline">by A&amp;T</div>
         <p>Where Elegance Meets Tradition. We craft premium 3-piece embroidered suits that celebrate the beauty of South Asian heritage with contemporary design.</p>
         <div class="footer-social">
@@ -222,7 +229,8 @@
         <h4>Shop</h4>
         <ul>
           <li><a href="#" id="footer-new-arrivals">New Arrivals</a></li>
-          <li><a href="#" id="footer-3-piece">3 Piece Embroidery</a></li>
+          <li><a href="#" id="footer-embroidered">Embroidered</a></li>
+          <li><a href="#" id="footer-3-piece">3-Piece Suits</a></li>
           <li><a href="#" id="footer-lawn">Lawn Collection</a></li>
           <li><a href="#" id="footer-scarves">Scarves</a></li>
           <li><a href="#" id="footer-sale">Sale</a></li>
