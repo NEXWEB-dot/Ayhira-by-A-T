@@ -392,34 +392,31 @@
         document.querySelectorAll('#filter-category input[type="checkbox"]:checked')
       ).map(cb => cb.id.replace('cat-', ''));
 
-      // Map checkbox IDs to Sanity category values
+      // Map checkbox ID suffixes to actual Sanity category values
+      // Actual Sanity categories: 'embroidery-3-piece-suits', 'lawn'
       const idToValue = {
-        'luxury-formals': 'luxury-formals',
-        'printed': 'solids',
-        'lawn': 'lawn',
-        'embroidery-3-piece': 'embroidered'
+        'lawn': 'lawn',                          // Foil Embroidered
+        'embroidery-3-piece': 'embroidery-3-piece-suits' // 3 Piece Embroidered
       };
 
-      // If a URL category is active and no checkbox is checked, filter by URL
+      // URL → Sanity category mapping
       const urlParams2 = new URLSearchParams(window.location.search);
       const urlCat = urlParams2.get('category');
 
       let filtered;
       if (checkedCats.length === 0) {
-        // No checkbox checked — if URL has a category, filter by it; else show all
         if (urlCat) {
           const urlCatMap = {
-            'luxury-formals': 'lawn',           // Luxury Formals = foil embroidered (lawn) in Sanity
-            'embroidered': 'embroidery-3-piece-suits', // 3 Pcs Embroidery Suits in Sanity
-            'solids': 'solids',                 // 2 Pcs Solids
-            'embroidery-3-piece-suits': 'embroidery-3-piece-suits'
+            'luxury-formals': 'lawn',                         // Luxury Formals = lawn in Sanity
+            'embroidery-3-piece-suits': 'embroidery-3-piece-suits', // 3 Pcs Embroidery Suits
+            'solids': 'solids'                                // 2 Pcs Solids (no products yet)
           };
           const sanityCategory = urlCatMap[urlCat];
           filtered = sanityCategory
             ? allProducts.filter(p => (p.category || '').toLowerCase().trim() === sanityCategory)
             : allProducts;
         } else {
-          filtered = allProducts;
+          filtered = allProducts; // No filter = show all
         }
       } else {
         filtered = allProducts.filter(p => {
@@ -428,26 +425,20 @@
         });
       }
 
-      // Update category counts dynamically
+      // Update category counts dynamically based on actual Sanity categories
       const counts = {
-        'luxury-formals': 0,
-        'solids': 0,
         'lawn': 0,
-        'embroidered': 0
+        'embroidery-3-piece-suits': 0
       };
 
       allProducts.forEach(p => {
         const cat = (p.category || '').toLowerCase().trim();
-        if (counts[cat] !== undefined) {
-          counts[cat]++;
-        }
+        if (counts[cat] !== undefined) counts[cat]++;
       });
 
       const idToCatMap = {
-        'cat-luxury-formals': 'luxury-formals',
-        'cat-printed': 'solids',
         'cat-lawn': 'lawn',
-        'cat-embroidery-3-piece': 'embroidered'
+        'cat-embroidery-3-piece': 'embroidery-3-piece-suits'
       };
 
       for (const [id, cat] of Object.entries(idToCatMap)) {
