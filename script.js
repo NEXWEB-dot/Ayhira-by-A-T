@@ -428,7 +428,8 @@
       // Update category counts dynamically based on actual Sanity categories
       const counts = {
         'lawn': 0,
-        'embroidery-3-piece-suits': 0
+        'embroidery-3-piece-suits': 0,
+        'solids': 0
       };
 
       allProducts.forEach(p => {
@@ -438,7 +439,8 @@
 
       const idToCatMap = {
         'cat-lawn': 'lawn',
-        'cat-embroidery-3-piece': 'embroidery-3-piece-suits'
+        'cat-embroidery-3-piece': 'embroidery-3-piece-suits',
+        'cat-printed': 'solids'
       };
 
       for (const [id, cat] of Object.entries(idToCatMap)) {
