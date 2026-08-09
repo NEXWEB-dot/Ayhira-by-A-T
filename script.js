@@ -372,9 +372,9 @@
 
       // Pre-check the matching sidebar checkbox
       const catMap = {
-        'embroidered': 'cat-embroidered',
-        'printed': 'cat-printed',
-        'lawn': 'cat-lawn',
+        'luxury-formals': 'cat-luxury-formals',
+        'embroidered': 'cat-embroidery-3-piece',
+        'solids': 'cat-printed',
         'embroidery-3-piece-suits': 'cat-embroidery-3-piece'
       };
       if (catMap[urlCategory]) {
@@ -394,27 +394,48 @@
 
       // Map checkbox IDs to Sanity category values
       const idToValue = {
-        'embroidered': 'embroidered',
-        'printed': 'printed',
+        'luxury-formals': 'luxury-formals',
+        'printed': 'solids',
         'lawn': 'lawn',
-        'embroidery-3-piece': 'embroidery-3-piece-suits'
+        'embroidery-3-piece': 'embroidered'
       };
 
-      const filtered = checkedCats.length === 0
-        ? allProducts
-        : allProducts.filter(p => {
-            const cat = (p.category || '').toLowerCase().trim();
-            return checkedCats.some(id => idToValue[id] === cat);
-          });
+      // If a URL category is active and no checkbox is checked, filter by URL
+      const urlParams2 = new URLSearchParams(window.location.search);
+      const urlCat = urlParams2.get('category');
+
+      let filtered;
+      if (checkedCats.length === 0) {
+        // No checkbox checked — if URL has a category, filter by it; else show all
+        if (urlCat) {
+          const urlCatMap = {
+            'luxury-formals': 'luxury-formals',
+            'embroidered': 'embroidered',
+            'solids': 'solids',
+            'embroidery-3-piece-suits': 'embroidery-3-piece-suits'
+          };
+          const sanityCategory = urlCatMap[urlCat];
+          filtered = sanityCategory
+            ? allProducts.filter(p => (p.category || '').toLowerCase().trim() === sanityCategory)
+            : allProducts;
+        } else {
+          filtered = allProducts;
+        }
+      } else {
+        filtered = allProducts.filter(p => {
+          const cat = (p.category || '').toLowerCase().trim();
+          return checkedCats.some(id => idToValue[id] === cat);
+        });
+      }
 
       // Update category counts dynamically
       const counts = {
-        'embroidered': 0,
-        'printed': 0,
+        'luxury-formals': 0,
+        'solids': 0,
         'lawn': 0,
-        'embroidery-3-piece-suits': 0
+        'embroidered': 0
       };
-      
+
       allProducts.forEach(p => {
         const cat = (p.category || '').toLowerCase().trim();
         if (counts[cat] !== undefined) {
@@ -423,10 +444,10 @@
       });
 
       const idToCatMap = {
-        'cat-embroidered': 'embroidered',
-        'cat-printed': 'printed',
+        'cat-luxury-formals': 'luxury-formals',
+        'cat-printed': 'solids',
         'cat-lawn': 'lawn',
-        'cat-embroidery-3-piece': 'embroidery-3-piece-suits'
+        'cat-embroidery-3-piece': 'embroidered'
       };
 
       for (const [id, cat] of Object.entries(idToCatMap)) {
