@@ -682,7 +682,7 @@
 
     // Fetch: LATEST DROP — latest 4 products ordered by creation date
     if (latestDropGrid) {
-      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url }';
+      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(latestQuery))
         .then(function (res) { return res.json(); })
@@ -695,14 +695,14 @@
 
     // Fetch: EMBROIDERED — 4 products with category == "embroidered"
     if (embroideredGrid) {
-      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url }';
+      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(embroideredQuery))
         .then(function (res) { return res.json(); })
         .then(function (data) {
           // If no embroidered products, fallback to showing any products
           if (!data.result || data.result.length === 0) {
-            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, category, "imageUrl": gallery[0].asset->url }';
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
             fetch(sanityUrl(fallbackQuery))
               .then(function (res2) { return res2.json(); })
               .then(function (data2) { renderHomeGrid(embroideredGrid, data2.result); })
