@@ -370,9 +370,8 @@
         }
       });
 
-      // Pre-check the matching sidebar checkbox
       const catMap = {
-        'luxury-formals': 'cat-luxury-formals',
+        'luxury-formals': 'cat-lawn',
         'embroidered': 'cat-embroidery-3-piece',
         'solids': 'cat-printed',
         'embroidery-3-piece-suits': 'cat-embroidery-3-piece'
