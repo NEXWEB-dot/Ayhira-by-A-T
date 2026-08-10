@@ -498,7 +498,6 @@
             </div>
           </div>
           <div class="product-card-info">
-            <p class="product-card-category">${catLabel}</p>
             <h3 class="product-card-title">${product.name}</h3>
             <div class="product-card-price">
               ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
