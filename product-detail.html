@@ -1230,9 +1230,19 @@
           }
 
           // ---- Populate Meta ----
-          var catLabel = product.category
-            ? product.category.replace(/-/g, ' ').toUpperCase()
-            : 'UNCATEGORIZED';
+          var categoryLabelMap = {
+            'georgette': '2 PIECE SOLIDS',
+            'printed': '2 PIECE SOLIDS',
+            'embroidered': 'EMBROIDERED',
+            'lawn': 'FOIL EMBROIDERED',
+            'embroidery-3-piece-suits': '3 PIECE SUITS'
+          };
+          var rawCat = (product.category || '').toLowerCase().trim();
+          var catLabel = categoryLabelMap[rawCat]
+            ? categoryLabelMap[rawCat]
+            : product.category
+              ? product.category.replace(/-/g, ' ').toUpperCase()
+              : 'UNCATEGORIZED';
 
           document.title = product.name + ' — Ayhira by A&T';
           document.getElementById('breadcrumb-product-name').textContent = product.name;
