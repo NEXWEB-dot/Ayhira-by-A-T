@@ -397,7 +397,7 @@
       const idToValue = {
         'lawn': 'lawn',                          // Foil Embroidered
         'embroidery-3-piece': 'embroidery-3-piece-suits', // 3 Piece Embroidered
-        'printed': 'solids'                      // 2 Pcs Solids
+        'printed': 'printed'                     // 2 Pcs Solids (Sanity uses 'printed')
       };
 
       // URL → Sanity category mapping
@@ -410,7 +410,7 @@
           const urlCatMap = {
             'luxury-formals': 'lawn',                         // Luxury Formals = lawn in Sanity
             'embroidery-3-piece-suits': 'embroidery-3-piece-suits', // 3 Pcs Embroidery Suits
-            'solids': 'solids'                                // 2 Pcs Solids (no products yet)
+            'solids': 'printed'                               // 2 Pcs Solids (Sanity uses 'printed')
           };
           const sanityCategory = urlCatMap[urlCat];
           filtered = sanityCategory
@@ -430,7 +430,7 @@
       const counts = {
         'lawn': 0,
         'embroidery-3-piece-suits': 0,
-        'solids': 0
+        'printed': 0
       };
 
       allProducts.forEach(p => {
@@ -441,7 +441,7 @@
       const idToCatMap = {
         'cat-lawn': 'lawn',
         'cat-embroidery-3-piece': 'embroidery-3-piece-suits',
-        'cat-printed': 'solids'
+        'cat-printed': 'printed'
       };
 
       for (const [id, cat] of Object.entries(idToCatMap)) {
