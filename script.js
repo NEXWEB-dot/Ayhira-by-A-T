@@ -392,11 +392,10 @@
       ).map(cb => cb.id.replace('cat-', ''));
 
       // Map checkbox ID suffixes to actual Sanity category values
-      // Actual Sanity categories: 'embroidery-3-piece-suits', 'lawn', 'georgette'
       const idToValue = {
-        'lawn': 'lawn',                          // Foil Embroidered
-        'embroidery-3-piece': 'embroidery-3-piece-suits', // 3 Piece Embroidered
-        'printed': 'georgette'                   // 2 Pcs Solids (Sanity uses 'georgette')
+        'lawn': ['lawn'],
+        'embroidery-3-piece': ['embroidery-3-piece-suits'],
+        'printed': ['georgette', 'printed']
       };
 
       // URL → Sanity category mapping
@@ -407,13 +406,13 @@
       if (checkedCats.length === 0) {
         if (urlCat) {
           const urlCatMap = {
-            'luxury-formals': 'lawn',                         // Luxury Formals = lawn in Sanity
-            'embroidery-3-piece-suits': 'embroidery-3-piece-suits', // 3 Pcs Embroidery Suits
-            'solids': 'georgette'                             // 2 Pcs Solids (Sanity uses 'georgette')
+            'luxury-formals': ['lawn'],
+            'embroidery-3-piece-suits': ['embroidery-3-piece-suits'],
+            'solids': ['georgette', 'printed']
           };
-          const sanityCategory = urlCatMap[urlCat];
-          filtered = sanityCategory
-            ? allProducts.filter(p => (p.category || '').toLowerCase().trim() === sanityCategory)
+          const sanityCategories = urlCatMap[urlCat];
+          filtered = sanityCategories
+            ? allProducts.filter(p => sanityCategories.includes((p.category || '').toLowerCase().trim()))
             : allProducts;
         } else {
           filtered = allProducts; // No filter = show all
@@ -421,7 +420,7 @@
       } else {
         filtered = allProducts.filter(p => {
           const cat = (p.category || '').toLowerCase().trim();
-          return checkedCats.some(id => idToValue[id] === cat);
+          return checkedCats.some(id => idToValue[id] && idToValue[id].includes(cat));
         });
       }
 
@@ -429,23 +428,25 @@
       const counts = {
         'lawn': 0,
         'embroidery-3-piece-suits': 0,
-        'georgette': 0
+        'solids': 0
       };
 
       allProducts.forEach(p => {
         const cat = (p.category || '').toLowerCase().trim();
-        if (counts[cat] !== undefined) counts[cat]++;
+        if (cat === 'lawn') counts['lawn']++;
+        else if (cat === 'embroidery-3-piece-suits') counts['embroidery-3-piece-suits']++;
+        else if (cat === 'georgette' || cat === 'printed') counts['solids']++;
       });
 
       const idToCatMap = {
         'cat-lawn': 'lawn',
         'cat-embroidery-3-piece': 'embroidery-3-piece-suits',
-        'cat-printed': 'georgette'
+        'cat-printed': 'solids'
       };
 
-      for (const [id, cat] of Object.entries(idToCatMap)) {
+      for (const [id, countKey] of Object.entries(idToCatMap)) {
          const labelCount = document.querySelector(`label[for="${id}"] .count`);
-         if (labelCount) labelCount.textContent = `(${counts[cat]})`;
+         if (labelCount) labelCount.textContent = `(${counts[countKey]})`;
       }
 
       renderProducts(filtered);
