@@ -1354,11 +1354,15 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
   }
 
-  .nav-dropdown-menu {
+  .nav-dropdown-menu,
+  .nav-dropdown:hover .nav-dropdown-menu {
     position: static;
     transform: none;
     box-shadow: none;
     border: none;
+  }
+  
+  .nav-dropdown-menu {
     padding-left: var(--space-md);
     opacity: 1;
     visibility: visible;
