@@ -608,8 +608,9 @@
   // ===== HOMEPAGE SANITY PRODUCT SECTIONS =====
   const latestDropGrid = document.getElementById('latest-drop-grid');
   const embroideredGrid = document.getElementById('embroidered-grid');
+  const solidsGrid = document.getElementById('solids-grid');
 
-  if (latestDropGrid || embroideredGrid) {
+  if (latestDropGrid || embroideredGrid || solidsGrid) {
     const SANITY_PROJECT = PROJECT_ID || 'sc8k5yfq';
     const SANITY_DATASET = DATASET || 'production';
 
@@ -728,6 +729,29 @@
         .catch(function (err) {
           console.error('Error fetching embroidered products:', err);
           embroideredGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Failed to load products.</p></div>';
+        });
+    }
+
+    // Fetch: 2 PIECE SOLIDS — 4 products
+    if (solidsGrid) {
+      var solidsQuery = '*[_type == "product" && (category match "*printed*" || category match "*2 Piece*" || category match "*2 piece*" || category match "*solids*")] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+
+      fetch(sanityUrl(solidsQuery))
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data.result || data.result.length === 0) {
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+            fetch(sanityUrl(fallbackQuery))
+              .then(function (res2) { return res2.json(); })
+              .then(function (data2) { renderHomeGrid(solidsGrid, data2.result); })
+              .catch(function () { renderHomeGrid(solidsGrid, []); });
+          } else {
+            renderHomeGrid(solidsGrid, data.result);
+          }
+        })
+        .catch(function (err) {
+          console.error('Error fetching solids products:', err);
+          solidsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 4rem;"><p>Failed to load products.</p></div>';
         });
     }
   }
