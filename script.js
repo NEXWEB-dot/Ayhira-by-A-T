@@ -393,10 +393,11 @@
       ).map(cb => cb.id.replace('cat-', ''));
 
       // Map checkbox ID suffixes to actual Sanity category values
-      // Actual Sanity categories: 'embroidery-3-piece-suits', 'lawn'
+      // Actual Sanity categories: 'embroidery-3-piece-suits', 'lawn', 'solids'
       const idToValue = {
         'lawn': 'lawn',                          // Foil Embroidered
-        'embroidery-3-piece': 'embroidery-3-piece-suits' // 3 Piece Embroidered
+        'embroidery-3-piece': 'embroidery-3-piece-suits', // 3 Piece Embroidered
+        'printed': 'solids'                      // 2 Pcs Solids
       };
 
       // URL → Sanity category mapping
