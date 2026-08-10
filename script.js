@@ -392,11 +392,11 @@
       ).map(cb => cb.id.replace('cat-', ''));
 
       // Map checkbox ID suffixes to actual Sanity category values
-      // Actual Sanity categories: 'embroidery-3-piece-suits', 'lawn', 'solids'
+      // Actual Sanity categories: 'embroidery-3-piece-suits', 'lawn', 'georgette'
       const idToValue = {
         'lawn': 'lawn',                          // Foil Embroidered
         'embroidery-3-piece': 'embroidery-3-piece-suits', // 3 Piece Embroidered
-        'printed': 'printed'                     // 2 Pcs Solids (Sanity uses 'printed')
+        'printed': 'georgette'                   // 2 Pcs Solids (Sanity uses 'georgette')
       };
 
       // URL → Sanity category mapping
@@ -409,7 +409,7 @@
           const urlCatMap = {
             'luxury-formals': 'lawn',                         // Luxury Formals = lawn in Sanity
             'embroidery-3-piece-suits': 'embroidery-3-piece-suits', // 3 Pcs Embroidery Suits
-            'solids': 'printed'                               // 2 Pcs Solids (Sanity uses 'printed')
+            'solids': 'georgette'                             // 2 Pcs Solids (Sanity uses 'georgette')
           };
           const sanityCategory = urlCatMap[urlCat];
           filtered = sanityCategory
@@ -429,7 +429,7 @@
       const counts = {
         'lawn': 0,
         'embroidery-3-piece-suits': 0,
-        'printed': 0
+        'georgette': 0
       };
 
       allProducts.forEach(p => {
@@ -440,7 +440,7 @@
       const idToCatMap = {
         'cat-lawn': 'lawn',
         'cat-embroidery-3-piece': 'embroidery-3-piece-suits',
-        'cat-printed': 'printed'
+        'cat-printed': 'georgette'
       };
 
       for (const [id, cat] of Object.entries(idToCatMap)) {
@@ -734,7 +734,7 @@
 
     // Fetch: 2 PIECE SOLIDS — 4 products
     if (solidsGrid) {
-      var solidsQuery = '*[_type == "product" && (category match "*printed*" || category match "*2 Piece*" || category match "*2 piece*" || category match "*solids*")] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+      var solidsQuery = '*[_type == "product" && category == "georgette"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(solidsQuery))
         .then(function (res) { return res.json(); })

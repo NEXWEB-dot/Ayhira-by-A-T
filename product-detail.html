@@ -1250,7 +1250,7 @@
           var sizeGuideSolids = document.getElementById('size-guide-solids');
           if (sizeGuideStandard && sizeGuideSolids) {
             var catForSize = (product.category || '').toLowerCase().trim();
-            if (catForSize.includes('printed') || catForSize.includes('2 piece') || catForSize.includes('solids')) {
+            if (catForSize === 'georgette' || catForSize.includes('2 piece')) {
               sizeGuideStandard.style.display = 'none';
               sizeGuideSolids.style.display = 'block';
             } else {
