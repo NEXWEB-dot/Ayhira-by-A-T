@@ -1112,6 +1112,41 @@
         </div>
       </div>
 
+      <!-- 2 Piece Btn Suits Size Chart (hidden by default, shown via Sanity sizeChartType) -->
+      <div id="size-guide-btn-suits" style="display: none;">
+        <h3 style="text-align:center; font-family:'Georgia',serif; margin-bottom:1rem; font-size:1.1rem; letter-spacing:0.1em; text-transform:uppercase;">Shirt Size Guide</h3>
+        <div class="size-table-wrapper">
+          <table class="size-table">
+            <thead>
+              <tr><th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Length(Front)</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Length(Back)</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Chest</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Shoulder</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Hem</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Sleeves</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Sleeves Opening</td><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 style="text-align:center; font-family:'Georgia',serif; margin:1.5rem 0 1rem; font-size:1.1rem; letter-spacing:0.1em;">Trouser Size Guide</h3>
+        <div class="size-table-wrapper">
+          <table class="size-table">
+            <thead>
+              <tr><th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Length</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Bottom Opening</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Waist Relaxed</td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td>Waist Stretched</td><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <p style="text-align:center; font-size:0.8rem; color:#666; margin-top:1rem;">Measurements are in inches.</p>
     </div>
   </div>
@@ -1190,7 +1225,7 @@
       var PROJECT_ID = 'sc8k5yfq';
       var DATASET = 'production';
       var query = encodeURIComponent(
-        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, description, colors, stitching, sizeChart, "galleryUrls": gallery[].asset->url }'
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, sizeChartType, description, colors, stitching, sizeChart, "galleryUrls": gallery[].asset->url }'
       );
       var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
@@ -1254,21 +1289,26 @@
           document.getElementById('meta-category').textContent = catLabel;
           document.getElementById('product-meta').style.display = 'block';
 
-          // Toggle size guide content based on category + dynamic Sanity chart
+          // Toggle size guide content based on sizeChartType or category + dynamic Sanity chart
           var sizeGuideStandard = document.getElementById('size-guide-standard');
           var sizeGuideSolids = document.getElementById('size-guide-solids');
+          var sizeGuideBtnSuits = document.getElementById('size-guide-btn-suits');
+          var allCharts = [sizeGuideStandard, sizeGuideSolids, sizeGuideBtnSuits];
+          // Hide all first
+          allCharts.forEach(function(el) { if (el) el.style.display = 'none'; });
+
           var catForSize = (product.category || '').toLowerCase().trim();
+          var chartType = (product.sizeChartType || '').toLowerCase().trim();
           var is2Piece = catForSize === 'georgette' || catForSize === 'printed' || catForSize.includes('2 piece') || catForSize.includes('solids');
 
-          // If Sanity has a custom size chart, render it dynamically
+          // If Sanity has custom dynamic rows, render them in solids div
           if (product.sizeChart && (product.sizeChart.shirtRows || product.sizeChart.trouserRows)) {
-            // Build dynamic chart HTML
             var chartHtml = '';
             if (product.sizeChart.shirtRows && product.sizeChart.shirtRows.length > 0) {
               chartHtml += '<h3 style="text-align:center;font-family:\'Georgia\',serif;margin-bottom:1rem;font-size:1.1rem;letter-spacing:0.1em;text-transform:uppercase;">Shirt Size Guide</h3>';
               chartHtml += '<div class="size-table-wrapper"><table class="size-table"><thead><tr><th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th></tr></thead><tbody>';
               product.sizeChart.shirtRows.forEach(function(row) {
-                chartHtml += '<tr><td>' + (row.label || '') + '</td><td>' + (row.xs || '') + '</td><td>' + (row.s || '') + '</td><td>' + (row.m || '') + '</td><td>' + (row.l || '') + '</td><td>' + (row.xl || '') + '</td></tr>';
+                chartHtml += '<tr><td>' + (row.label||'') + '</td><td>' + (row.xs||'') + '</td><td>' + (row.s||'') + '</td><td>' + (row.m||'') + '</td><td>' + (row.l||'') + '</td><td>' + (row.xl||'') + '</td></tr>';
               });
               chartHtml += '</tbody></table></div>';
             }
@@ -1276,22 +1316,20 @@
               chartHtml += '<h3 style="text-align:center;font-family:\'Georgia\',serif;margin:1.5rem 0 1rem;font-size:1.1rem;letter-spacing:0.1em;">Trouser Size Guide</h3>';
               chartHtml += '<div class="size-table-wrapper"><table class="size-table"><thead><tr><th>Size</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th></tr></thead><tbody>';
               product.sizeChart.trouserRows.forEach(function(row) {
-                chartHtml += '<tr><td>' + (row.label || '') + '</td><td>' + (row.xs || '') + '</td><td>' + (row.s || '') + '</td><td>' + (row.m || '') + '</td><td>' + (row.l || '') + '</td><td>' + (row.xl || '') + '</td></tr>';
+                chartHtml += '<tr><td>' + (row.label||'') + '</td><td>' + (row.xs||'') + '</td><td>' + (row.s||'') + '</td><td>' + (row.m||'') + '</td><td>' + (row.l||'') + '</td><td>' + (row.xl||'') + '</td></tr>';
               });
               chartHtml += '</tbody></table></div>';
             }
-            // Show dynamic chart in solids div, hide standard
             if (sizeGuideSolids) { sizeGuideSolids.innerHTML = chartHtml; sizeGuideSolids.style.display = 'block'; }
-            if (sizeGuideStandard) sizeGuideStandard.style.display = 'none';
-          } else if (sizeGuideStandard && sizeGuideSolids) {
-            // Fall back to hardcoded charts
-            if (is2Piece) {
-              sizeGuideStandard.style.display = 'none';
-              sizeGuideSolids.style.display = 'block';
-            } else {
-              sizeGuideStandard.style.display = 'block';
-              sizeGuideSolids.style.display = 'none';
-            }
+          } else if (chartType === 'btn-suits') {
+            // Show btn suits chart
+            if (sizeGuideBtnSuits) sizeGuideBtnSuits.style.display = 'block';
+          } else if (chartType === '2-piece-solids' || is2Piece) {
+            // Show 2-piece solids chart
+            if (sizeGuideSolids) sizeGuideSolids.style.display = 'block';
+          } else {
+            // Show standard chart
+            if (sizeGuideStandard) sizeGuideStandard.style.display = 'block';
           }
 
           // Show quantity row and logic if not sold out
