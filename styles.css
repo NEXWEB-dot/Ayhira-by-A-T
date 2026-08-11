@@ -235,10 +235,9 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 600;
-  color: var(--color-espresso);
+  color: var(--color-peach-mid);
   letter-spacing: 0.08em;
   line-height: 1;
-  text-shadow: 2px 2px 8px var(--color-peach-mid);
 }
 
 .logo-sub {
