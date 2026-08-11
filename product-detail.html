@@ -1155,7 +1155,7 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <!-- Main site JS -->
-  <script src="script.js?v=5.0"></script>
+  <script src="script.js?v=6.0"></script>
   
   <!-- Product Detail Logic -->
   <script>
@@ -1225,7 +1225,7 @@
       var PROJECT_ID = 'sc8k5yfq';
       var DATASET = 'production';
       var query = encodeURIComponent(
-        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, sizeChartType, description, colors, stitching, sizeChart, "galleryUrls": gallery[].asset->url }'
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, sizeChartType, description, colors, stitching, "sizeChart": sizeChartReference->, "galleryUrls": gallery[].asset->url }'
       );
       var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
