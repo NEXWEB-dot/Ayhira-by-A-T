@@ -477,6 +477,8 @@
         const catLabel = product.category 
           ? product.category.replace(/-/g, ' ').toUpperCase()
           : 'UNCATEGORIZED';
+        
+        const displayLabel = product.cardLabel ? product.cardLabel : catLabel;
 
         const article = document.createElement('article');
         article.className = 'product-card';
@@ -498,6 +500,7 @@
             </div>
           </div>
           <div class="product-card-info">
+            <div class="product-card-category">${displayLabel}</div>
             <h3 class="product-card-title">${product.name}</h3>
             <div class="product-card-price">
               ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
@@ -584,7 +587,7 @@
     // ===== FETCH FROM SANITY =====
     const PROJECT_ID = 'sc8k5yfq';
     const DATASET = 'production';
-    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url}');
+    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url}');
     const url = `https://${PROJECT_ID}.apicdn.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
 
     fetch(url)
@@ -635,6 +638,8 @@
         ? product.category.replace(/-/g, ' ').toUpperCase()
         : 'UNCATEGORIZED';
 
+      const displayLabel = product.cardLabel ? product.cardLabel : catLabel;
+
       const article = document.createElement('article');
       article.className = 'product-card';
       article.id = `home-product-${product._id}`;
@@ -646,6 +651,7 @@
           <img src="${product.imageUrl ? product.imageUrl + '?w=800&q=80&fit=max&auto=format' : 'https://via.placeholder.com/600x800?text=No+Image'}" alt="${product.name}" loading="lazy" width="600" height="800">
         </div>
         <div class="product-card-info">
+          <div class="product-card-category">${displayLabel}</div>
           <h3 class="product-card-title">${product.name}</h3>
           <div class="product-card-price">
             ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
@@ -697,7 +703,8 @@
 
     // Fetch: LATEST DROP — latest 4 products ordered by creation date
     if (latestDropGrid) {
-      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+      // Latest collection
+      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(latestQuery))
         .then(function (res) { return res.json(); })
@@ -710,14 +717,15 @@
 
     // Fetch: EMBROIDERED — 4 products with category == "embroidered"
     if (embroideredGrid) {
-      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+      // 3 Pcs Embroidered collection
+      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(embroideredQuery))
         .then(function (res) { return res.json(); })
         .then(function (data) {
           // If no embroidered products, fallback to showing any products
           if (!data.result || data.result.length === 0) {
-            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
             fetch(sanityUrl(fallbackQuery))
               .then(function (res2) { return res2.json(); })
               .then(function (data2) { renderHomeGrid(embroideredGrid, data2.result); })
@@ -734,13 +742,14 @@
 
     // Fetch: 2 PIECE SOLIDS — 4 products
     if (solidsGrid) {
-      var solidsQuery = '*[_type == "product" && category == "georgette"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+      // 2 Pcs Solids collection
+      var solidsQuery = '*[_type == "product" && category == "georgette"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(solidsQuery))
         .then(function (res) { return res.json(); })
         .then(function (data) {
           if (!data.result || data.result.length === 0) {
-            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, "imageUrl": gallery[0].asset->url }';
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
             fetch(sanityUrl(fallbackQuery))
               .then(function (res2) { return res2.json(); })
               .then(function (data2) { renderHomeGrid(solidsGrid, data2.result); })
