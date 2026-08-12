@@ -800,6 +800,64 @@
       font-size: 0.8rem;
       margin-left: 1rem;
     }
+
+    /* ── Size Chips (Detail Page) ── */
+    .size-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .size-chip {
+      min-width: 46px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0.85rem;
+      background: transparent;
+      border: 1px solid var(--color-border);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--color-text);
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      position: relative;
+      user-select: none;
+    }
+
+    .size-chip:hover:not(.soldout) {
+      border-color: var(--color-espresso);
+    }
+
+    .size-chip.active {
+      background-color: var(--color-espresso);
+      border-color: var(--color-espresso);
+      color: var(--color-white);
+    }
+
+    /* Sold-out size chip — strikethrough diagonal line + muted colors */
+    .size-chip.soldout {
+      color: #bbb;
+      border-color: #e0e0e0;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: #fafafa;
+      overflow: hidden;
+    }
+
+    .size-chip.soldout::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: -10%;
+      width: 120%;
+      height: 1px;
+      background: #ccc;
+      transform: rotate(-20deg);
+    }
   </style>
 </head>
 <body>
@@ -918,6 +976,14 @@
             <h4 style="margin: 0;">Stitching</h4>
           </div>
           <div class="stitching-options" id="stitching-options"></div>
+        </div>
+
+        <!-- Sizes -->
+        <div class="product-options" id="product-sizes-container" style="display:none;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem;">
+            <h4 style="margin:0;">Size <span id="selected-size-label" style="color:var(--color-gold); font-size:0.78rem; margin-left:0.5rem;"></span></h4>
+          </div>
+          <div class="size-options" id="product-sizes"></div>
         </div>
 
         <!-- Colors -->
@@ -1225,7 +1291,7 @@
       var PROJECT_ID = 'sc8k5yfq';
       var DATASET = 'production';
       var query = encodeURIComponent(
-        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, category, sizeChartType, description, colors, stitching, "sizeChart": sizeChartReference->, "galleryUrls": gallery[].asset->url }'
+        '*[_type == "product" && slug.current == "' + productSlug + '"][0]{ name, price, discountPercent, isSoldOut, sizes, category, sizeChartType, description, colors, stitching, "sizeChart": sizeChartReference->, "galleryUrls": gallery[].asset->url }'
       );
       var apiUrl = 'https://' + PROJECT_ID + '.apicdn.sanity.io/v2023-05-03/data/query/' + DATASET + '?query=' + query;
 
@@ -1392,6 +1458,44 @@
             // Default to the first available choice
             selectedStitchingChoice = stitchingChoices[0];
             renderPrice(stitchingChoices[0].price);
+          }
+
+          // ---- Sizes ----
+          var selectedSize = null;
+          if (product.sizes && product.sizes.length > 0) {
+            var sizesContainer = document.getElementById('product-sizes-container');
+            var sizesDiv = document.getElementById('product-sizes');
+            var selectedSizeLabel = document.getElementById('selected-size-label');
+            sizesContainer.style.display = 'block';
+
+            // Auto-select first available size
+            var firstAvailable = product.sizes.find(function(s) { return !s.isSoldOut; });
+            if (firstAvailable) {
+              selectedSize = firstAvailable.label;
+              selectedSizeLabel.textContent = '— ' + firstAvailable.label;
+            }
+
+            product.sizes.forEach(function(size) {
+              var chip = document.createElement('button');
+              chip.type = 'button';
+              chip.textContent = size.label;
+
+              if (size.isSoldOut) {
+                chip.className = 'size-chip soldout';
+                chip.disabled = true;
+                chip.setAttribute('aria-label', size.label + ' - Sold Out');
+                chip.title = 'Sold Out';
+              } else {
+                chip.className = 'size-chip' + (firstAvailable && size.label === firstAvailable.label ? ' active' : '');
+                chip.addEventListener('click', function() {
+                  document.querySelectorAll('.size-chip:not(.soldout)').forEach(function(c) { c.classList.remove('active'); });
+                  chip.classList.add('active');
+                  selectedSize = size.label;
+                  selectedSizeLabel.textContent = '— ' + size.label;
+                });
+              }
+              sizesDiv.appendChild(chip);
+            });
           }
 
           // ---- Colors ----

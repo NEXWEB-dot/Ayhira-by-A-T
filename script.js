@@ -484,6 +484,14 @@
         article.className = 'product-card';
         article.id = `product-${product._id}`;
 
+        // Build size chips HTML
+        const sizesHtml = (product.sizes && product.sizes.length > 0)
+          ? `<div class="card-sizes">${product.sizes.map(s => s.isSoldOut
+              ? `<span class="card-size-chip soldout" title="${s.label} — Sold Out">${s.label}</span>`
+              : `<span class="card-size-chip">${s.label}</span>`
+            ).join('')}</div>`
+          : '';
+
         article.innerHTML = `
           <div class="product-card-image">
             ${product.isSoldOut ? `<span class="product-badge badge-soldout" style="position:absolute; top:10px; right:10px; background:#333; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; z-index:2; font-weight:bold;">Sold Out</span>` : ''}
@@ -506,6 +514,7 @@
               ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
               <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
             </div>
+            ${sizesHtml}
           </div>
         `;
 
@@ -587,7 +596,7 @@
     // ===== FETCH FROM SANITY =====
     const PROJECT_ID = 'sc8k5yfq';
     const DATASET = 'production';
-    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url}');
+    const query = encodeURIComponent('*[_type == "product"]{_id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, sizes, category, cardLabel, "imageUrl": gallery[0].asset->url}');
     const url = `https://${PROJECT_ID}.apicdn.sanity.io/v2023-05-03/data/query/${DATASET}?query=${query}`;
 
     fetch(url)
@@ -644,6 +653,15 @@
       article.className = 'product-card';
       article.id = `home-product-${product._id}`;
 
+      // Build size chips HTML for homepage cards
+      var homeSizesHtml = (product.sizes && product.sizes.length > 0)
+        ? '<div class="card-sizes">' + product.sizes.map(function(s) {
+            return s.isSoldOut
+              ? '<span class="card-size-chip soldout" title="' + s.label + ' — Sold Out">' + s.label + '</span>'
+              : '<span class="card-size-chip">' + s.label + '</span>';
+          }).join('') + '</div>'
+        : '';
+
       article.innerHTML = `
         <div class="product-card-image">
           ${product.isSoldOut ? `<span class="product-badge badge-soldout" style="position:absolute; top:10px; right:10px; background:#333; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; z-index:2; font-weight:bold;">Sold Out</span>` : ''}
@@ -657,6 +675,7 @@
             ${hasDiscount ? `<span class="price-regular" style="text-decoration: line-through; color: #999; margin-right: 0.5rem; font-size: 0.9em;">Rs. ${formattedOldPrice}</span>` : ''}
             <span class="price-regular" ${hasDiscount ? 'style="color: #e74c3c; font-weight: bold;"' : ''}>Rs. ${formattedPrice}</span>
           </div>
+          ${homeSizesHtml}
         </div>
       `;
 
@@ -704,7 +723,7 @@
     // Fetch: LATEST DROP — latest 4 products ordered by creation date
     if (latestDropGrid) {
       // Latest collection
-      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
+      var latestQuery = '*[_type == "product"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, sizes, category, cardLabel, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(latestQuery))
         .then(function (res) { return res.json(); })
@@ -718,14 +737,14 @@
     // Fetch: EMBROIDERED — 4 products with category == "embroidered"
     if (embroideredGrid) {
       // 3 Pcs Embroidered collection
-      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
+      var embroideredQuery = '*[_type == "product" && category == "embroidered"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, sizes, category, cardLabel, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(embroideredQuery))
         .then(function (res) { return res.json(); })
         .then(function (data) {
           // If no embroidered products, fallback to showing any products
           if (!data.result || data.result.length === 0) {
-            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, sizes, category, cardLabel, "imageUrl": gallery[0].asset->url }';
             fetch(sanityUrl(fallbackQuery))
               .then(function (res2) { return res2.json(); })
               .then(function (data2) { renderHomeGrid(embroideredGrid, data2.result); })
@@ -743,13 +762,13 @@
     // Fetch: 2 PIECE SOLIDS — 4 products
     if (solidsGrid) {
       // 2 Pcs Solids collection
-      var solidsQuery = '*[_type == "product" && category == "georgette"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
+      var solidsQuery = '*[_type == "product" && category == "georgette"] | order(_createdAt desc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, sizes, category, cardLabel, "imageUrl": gallery[0].asset->url }';
 
       fetch(sanityUrl(solidsQuery))
         .then(function (res) { return res.json(); })
         .then(function (data) {
           if (!data.result || data.result.length === 0) {
-            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, category, cardLabel, "imageUrl": gallery[0].asset->url }';
+            var fallbackQuery = '*[_type == "product"] | order(_createdAt asc) [0...4] { _id, name, "slug": slug.current, price, stitching, discountPercent, isSoldOut, sizes, category, cardLabel, "imageUrl": gallery[0].asset->url }';
             fetch(sanityUrl(fallbackQuery))
               .then(function (res2) { return res2.json(); })
               .then(function (data2) { renderHomeGrid(solidsGrid, data2.result); })
