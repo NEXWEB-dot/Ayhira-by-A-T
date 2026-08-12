@@ -1583,7 +1583,7 @@
 
             var cart = getCart();
             var existingIdx = cart.findIndex(function (item) {
-              return item.id === product._id && item.color === selectedColor && item.stitching === stitchingLabel;
+              return item.id === product._id && item.color === selectedColor && item.stitching === stitchingLabel && item.size === selectedSize;
             });
 
             if (existingIdx > -1) {
@@ -1597,6 +1597,7 @@
                 image: images[0],
                 color: selectedColor,
                 stitching: stitchingLabel,
+                size: selectedSize,
                 qty: qty,
               });
             }

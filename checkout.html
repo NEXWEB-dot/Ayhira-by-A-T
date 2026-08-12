@@ -1147,7 +1147,7 @@
           return '<div class="summary-item" id="cart-item-' + idx + '">'
             + '<img class="summary-item-img" src="' + (item.image || 'https://via.placeholder.com/64x84?text=No+Img') + '" alt="' + item.name + '" loading="lazy">'
             + '<div class="summary-item-info">'
-            + '<div class="summary-item-name">' + item.name + '</div>'
+            + '<div class="summary-item-name">' + item.name + (item.size ? ' - Size: ' + item.size : '') + '</div>'
             + '<div class="summary-item-meta">'
             + (item.color ? 'Color: ' + item.color + ' &nbsp;|&nbsp; ' : '')
             + 'Qty: ' + item.qty
@@ -1305,20 +1305,13 @@
         var total         = subtotal - discount + shipping;
         var orderNo       = 'AYH-' + Date.now().toString().slice(-5);
 
-        // Build human-readable cart items string
-        var itemsList = cart.map(function (item) {
-          return item.name
-            + (item.color ? ' (' + item.color + ')' : '')
-            + ' x' + item.qty
-            + ' — Rs. ' + (item.price * item.qty).toLocaleString();
-        }).join('\n');
-
         /* ---- Easypaisa & Bank Transfer → WhatsApp ---- */
         if (paymentMethod === 'easypaisa' || paymentMethod === 'bank') {
           var methodLabel = paymentMethod === 'easypaisa' ? 'Easypaisa' : 'Bank Transfer';
           var waMsg = 'Hi! I would like to place an order via *' + methodLabel + '*:%0A%0A';
           cart.forEach(function (item) {
             waMsg += '%E2%96%B8 ' + item.name
+              + (item.size ? ' - Size: ' + item.size : '')
               + (item.color ? ' (' + item.color + ')' : '')
               + ' x' + item.qty
               + ' %E2%80%94 Rs. ' + (item.price * item.qty).toLocaleString() + '%0A';
@@ -1348,9 +1341,6 @@
         btn.textContent = 'Place Order';
         btn.disabled = false;
 
-        // Send order confirmation (customer) + notification (store owner) via Resend.
-        // The actual send happens server-side in /functions/api/send-order-email.js —
-        // the Resend API key must never be exposed in this client-side code.
         var orderPayload = {
           orderId:       orderNo,
           customerName:  firstName + ' ' + lastName,
@@ -1360,7 +1350,7 @@
           notes:         notes || 'None',
           items: cart.map(function (item) {
             return {
-              name:  item.name + (item.color ? ' (' + item.color + ')' : ''),
+              name:  item.name + (item.color ? ' (' + item.color + ')' : '') + (item.size ? ' - Size: ' + item.size : ''),
               qty:   item.qty,
               price: 'Rs. ' + (item.price * item.qty).toLocaleString()
             };
