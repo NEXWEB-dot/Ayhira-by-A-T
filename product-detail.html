@@ -1011,6 +1011,10 @@
             <span>Category</span>
             <span id="meta-category">—</span>
           </div>
+          <div class="product-meta-item" id="delivery-time-container" style="display:none;">
+            <span>Delivery Time</span>
+            <span id="meta-delivery-time">—</span>
+          </div>
           <div class="product-meta-item">
             <span>Delivery</span>
             <span>Rs. 250 Flat Rate</span>
@@ -1451,6 +1455,17 @@
                 chip.classList.add('active');
                 selectedStitchingChoice = choice;
                 renderPrice(choice.price);
+
+                var sizesContainer = document.getElementById('product-sizes-container');
+                if (sizesContainer && product.sizes && product.sizes.length > 0) {
+                  if (choice.label === 'Unstitched') {
+                    sizesContainer.style.display = 'none';
+                  } else {
+                    sizesContainer.style.display = 'block';
+                  }
+                }
+                
+                updateDeliveryTime(product.category, choice.label);
               });
               stitchingDiv.appendChild(chip);
             });
@@ -1459,6 +1474,40 @@
             selectedStitchingChoice = stitchingChoices[0];
             renderPrice(stitchingChoices[0].price);
           }
+          
+          function updateDeliveryTime(category, stitchLabel) {
+            var rawCat = (category || '').toLowerCase().trim();
+            var deliveryContainer = document.getElementById('delivery-time-container');
+            var deliveryTimeEl = document.getElementById('meta-delivery-time');
+            
+            var timeStr = '';
+            var isSolids = rawCat === 'georgette' || rawCat === 'printed' || rawCat.includes('2 piece') || rawCat.includes('solids');
+            var isFoilOr3Piece = rawCat === 'lawn' || rawCat === 'embroidery-3-piece-suits' || rawCat.includes('foil') || rawCat.includes('3 piece');
+            
+            if (isSolids) {
+              timeStr = '7-9 working days';
+            } else if (isFoilOr3Piece) {
+              if (stitchLabel === 'Unstitched') {
+                timeStr = '5-6 working days';
+              } else {
+                timeStr = '7-9 working days';
+              }
+            } else {
+              // Default fallback
+              timeStr = '7-9 working days';
+            }
+
+            if (timeStr && deliveryContainer && deliveryTimeEl) {
+              deliveryTimeEl.textContent = timeStr;
+              deliveryContainer.style.display = 'flex';
+            } else if (deliveryContainer) {
+              deliveryContainer.style.display = 'none';
+            }
+          }
+
+          var initialStitchLabel = selectedStitchingChoice ? selectedStitchingChoice.label : '';
+          updateDeliveryTime(product.category, initialStitchLabel);
+
 
           // ---- Sizes ----
           var selectedSize = null;
@@ -1466,7 +1515,13 @@
             var sizesContainer = document.getElementById('product-sizes-container');
             var sizesDiv = document.getElementById('product-sizes');
             var selectedSizeLabel = document.getElementById('selected-size-label');
-            sizesContainer.style.display = 'block';
+            
+            if (selectedStitchingChoice && selectedStitchingChoice.label === 'Unstitched') {
+              sizesContainer.style.display = 'none';
+            } else {
+              sizesContainer.style.display = 'block';
+            }
+
 
             // Auto-select first available size
             var firstAvailable = product.sizes.find(function(s) { return !s.isSoldOut; });
@@ -1580,10 +1635,11 @@
             var basePrice = selectedStitchingChoice ? selectedStitchingChoice.price : product.price;
             var cartPrice = basePrice;
             var stitchingLabel = selectedStitchingChoice ? selectedStitchingChoice.label : '';
+            var finalSize = (stitchingLabel === 'Unstitched') ? null : selectedSize;
 
             var cart = getCart();
             var existingIdx = cart.findIndex(function (item) {
-              return item.id === product._id && item.color === selectedColor && item.stitching === stitchingLabel && item.size === selectedSize;
+              return item.id === product._id && item.color === selectedColor && item.stitching === stitchingLabel && item.size === finalSize;
             });
 
             if (existingIdx > -1) {
@@ -1597,7 +1653,7 @@
                 image: images[0],
                 color: selectedColor,
                 stitching: stitchingLabel,
-                size: selectedSize,
+                size: finalSize,
                 qty: qty,
               });
             }
