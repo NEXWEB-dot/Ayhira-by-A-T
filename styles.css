@@ -2324,3 +2324,99 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 0;
   }
 }
+
+/* ===== HERO SALE OVERLAY ===== */
+.hero-overlay--sale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+/* "🔥 LIMITED TIME OFFER" tag */
+.hero-sale-tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  background: rgba(255, 60, 40, 0.85);
+  color: #fff;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+  backdrop-filter: blur(4px);
+  animation: hero-tag-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes hero-tag-pulse {
+  from { box-shadow: 0 0 0 rgba(255, 60, 40, 0); }
+  to   { box-shadow: 0 0 16px rgba(255, 60, 40, 0.7); }
+}
+
+/* "CLEARANCE SALE" heading */
+.hero-sale-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.2rem;
+}
+
+/* "50% OFF" block */
+.hero-sale-discount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2em;
+  line-height: 1;
+}
+
+.hero-sale-percent {
+  font-family: var(--font-heading);
+  font-size: clamp(4.5rem, 11vw, 9rem);
+  font-weight: 700;
+  color: #ff5a47;
+  letter-spacing: -0.02em;
+  animation: hero-glow 2.5s ease-in-out infinite alternate;
+}
+
+.hero-sale-off {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 300;
+  color: #ffcfbe;
+  letter-spacing: 0.1em;
+}
+
+@keyframes hero-glow {
+  from { text-shadow: 0 4px 20px rgba(255, 80, 60, 0.4); color: #ff5a47; }
+  to   { text-shadow: 0 4px 50px rgba(255, 80, 60, 0.85), 0 0 60px rgba(255,100,70,0.3); color: #ff7a68; }
+}
+
+/* Vivid red "Shop Now" CTA for sale slide */
+.hero-cta--sale {
+  margin-top: 1rem;
+  background: #ff4a38 !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(255, 60, 40, 0.45);
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.hero-slide-link:hover .hero-cta--sale {
+  background: #d93a28 !important;
+  color: #fff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 30px rgba(255, 60, 40, 0.65) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-sale-heading { letter-spacing: 0.15em; }
+  .hero-sale-tag { font-size: 0.6rem; }
+}
